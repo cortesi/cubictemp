@@ -1,0 +1,61 @@
+
+<p> Now, we can finally give a fairly formal definition of Cubictemp's
+escaping mechanism. The syntax
+
+<!--(raw)-->
+<code class="template">@!...!@</code> 
+<!--(end)-->
+
+denotes an <b>escaped</b> substitution:
+
+	<ul>
+
+		<li> Escaped substitutions are always escaped...
+
+		<li> ... <b>except</b> if the expression in the substitution tag
+		evaluates to an object on which the special attribute
+		"_cubictemp_unescaped" evaluates to true. 
+
+		<li> Cubictemp blocks (discussed in the next chapter) have a special
+		attribute "_cubictemp_unescaped" which evaluates to true.
+
+	</ul>
+
+
+<p> The syntax
+
+<!--(raw)-->
+<code class="template">$!...!$</code> 
+<!--(end)-->
+
+denotes an <b>un-escaped</b> substitution. Expressions using this substitution
+syntax are <b>never</b> escaped.</p>
+
+<p> The process of escaping simply involves converting the following characters
+to their corresponding HTML escape sequences: </p>
+
+	<ul>
+
+		<li> &amp;
+		<li> &lt;
+		<li> &gt;
+		<li> &quot;
+		<li> &#146;
+
+	</ul>
+
+<p> The reason for the presence of the &quot; and &#146; characters in the list
+above may not be obvious at first sight. The &quot; character is included
+because it can be used to break out of an HTML attribute value string. The
+&#146; character is included because programmers often have to substitute text
+into Javascript strings when creating dynamic web-pages. A single-quote
+character can be used to break out of a Javascript string, and inject malicious
+code. </p>
+
+<h2> A simple rule of thumb </h2>
+
+<p> What all this amounts to is a simple rule of thumb for avoiding XSS
+problems - always use the <b>escaped</b> substitution syntax if you can. On
+those rare occasions when you really need to place HTML in a substitution tag,
+use the <b>un-escaped</b> syntax, but only after carefully evaluating the
+application context to make sure that users cannot inject malicious data. </p>

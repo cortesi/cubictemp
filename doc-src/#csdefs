@@ -1,0 +1,17 @@
+index.html          Introduction
+start.html          Getting Started
+templates.html      Templates
+subs.html           Substitutions
+subs
+blocks.html         Blocks
+blocks
+conds.html          Conditionals
+cheat.html          Cheat Sheet
+admin.html          Administrivia
+
+# Configuration
+frame <- ../../../common/csdocs/frame.html
+copy(../../../common/csdocs/style.css)
+docTitle = Cubictemp Manual
+docMaintainer = Aldo Cortesi
+docMaintainerEmail = aldo@nullcube.com

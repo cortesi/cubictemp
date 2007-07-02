@@ -1,0 +1,13 @@
+@!"a" if 1 else "b"!@
+
+@!"a" if 0 else "b"!@
+
+<!--(block foo)
+a
+b
+(end)-->
+@!foo if 1 else "none"!@
+
+@!foo if 0 else "none"!@
+
+@!"safe" if 1 else 1/0!@

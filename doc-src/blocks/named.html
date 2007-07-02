@@ -1,0 +1,163 @@
+
+<p> Cubictemp provides the programmer with the ability to define named blocks -
+that is, blocks of text that are defined in the template body itself, and can
+be referenced by name anywhere after the definition. </p>
+
+<!--(block foo)-->
+    <!--(raw)-->
+        <!--(block bar)-->
+            The time has come the @!foo!@ said
+            To speak of many things...
+        <!--(end)-->
+        @!bar!@
+    <!--(end)-->
+<!--(end)-->
+<code class="template">
+	@!escape(repr(foo))!@<br>
+</code>
+
+<p> The template definition above declares a named block called "bar", which can
+then be referenced by name in the template. Behind the scenes, the lines in the
+block definition are actually used to instantiate a nested CubicTemp template,
+with a namespace equal to that where the block was <i>declared</i>. This
+template definition is then inserted into the current namespace, under the name
+specified in the block definition. Using the following piece of code:</p>
+
+<!--(block code)
+import cubictemp
+
+temp = cubictemp.File("template", foo="walrus")
+print temp
+(end)-->
+<code>
+	@!colourPython(code)!@
+</code>
+
+<p>the template above will output:</p>
+
+<!--(block foo)-->
+    The time has come the walrus said
+    To speak of many things...
+<!--(end)-->
+<code class="output">
+	@!escape(repr(foo))!@<br>
+</code>
+
+<p> Notice that the contents of the named block are not inserted into the
+output due to the <i>definition</i> of the named block, but rather due to its
+occurence in the following substitution tag.</p>
+
+<p> One more thing that should be mentioned is the fact that named blocks (and
+Cubictemp templates in general) have the "_cubictemp_unescaped" attribute
+defined by default. This means that they will go unescaped when inserted using
+the standard 
+
+<!--(raw)-->
+<code class="template">@!...!@</code> 
+<!--(end)-->
+
+escaped subsitution syntax. This arrangement makes sense when you consider that
+the raw content of named blocks will almost never originate from an untrusted
+source, and that blocks very commonly intentionally contain HTML. </p>
+
+
+<h2> Calling blocks </h2>
+
+<p> During our discussion of <a href="../templates.html">templates</a>, we
+noted that a Template object can be rendered by calling it like a function. The
+user can also pass a set of keyword arguments to this call, which over-rides
+the namespace provided at the instantiation of the object. The same is true for
+named blocks - you can call a block, and provide namespace arguments
+on-the-fly. Consider the following template:</p>
+
+<!--(block foo)-->
+    <!--(raw)-->
+        <!--(block bar)-->
+            The time has come the @!foo!@ said
+            To speak of many things...
+        <!--(end)-->
+        @!bar(foo="walrus")!@
+        @!bar(foo="carpenter"")!@
+    <!--(end)-->
+<!--(end)-->
+<code class="template">
+	@!escape(repr(foo))!@<br>
+</code>
+
+<p> Regardless of the arguments supplied during instantiation of the Template
+object, the template above will produce the following output: </p>
+
+<!--(block foo)-->
+	The time has come the walrus said
+	To speak of many things...
+
+	The time has come the carpenter said
+	To speak of many things...
+<!--(end)-->
+<code class="output">
+	@!escape(repr(foo))!@<br>
+</code>
+
+
+<h2> A pertinent example </h2>
+
+<p> Named blocks are incredibly useful. This document, for instance, is written
+and maintained with a system that uses CubicTemp templates extensively. Have a
+look at the Python code examples in this manual. Writing and maintaining syntax
+highlighted Python code by hand would be well neigh impossible (view the source
+for this page to see what's involved). Instead, we have written a Python
+wrapper object, that takes a block normal Python code as input, and produces
+properly indented and highlighted HTML when the "__repr__" method is called.
+Named blocks now make it easy to integrate the snippets of example code, and
+the rules for presenting them. Here is the the section of the template that
+produced the code sample above: </p>
+
+<!--(block foo)-->
+    <!--(raw)-->
+        <!--(block code)
+            import cubictemp
+
+            temp = cubictemp.File("template", foo = "walrus")
+            print temp
+        (end)-->
+		@!colourPython(code)!@
+    <!--(end)-->
+<!--(end)-->
+<code class="template">
+	@!escape(repr(foo))!@<br>
+</code>
+
+<p> ... and here is an abbreviated version of the Python code to render it:</p>
+
+<!--(block code)
+import cubictemp
+
+def ColourPython:
+	"""
+	This function takes a raw string of Python code, and returns 
+	properly formatted HTML. 
+	"""
+	_cubictemp_unescaped = 1
+	def __init__(self, code):
+		self.code = code
+
+	def __repr__(self):
+		# Details omitted... :)
+		return highlightedString
+
+temp = cubictemp.File("template", colourPython = ColourPython)
+print temp
+(end)-->
+<code>
+	@!colourPython(code)!@
+</code>
+
+<p> The code above simply places the class "ColourPython" (too long to show
+here in full) in the namespace that gets passed to the template instance. The
+class is now available for instantiation within our template. The template then
+simply passes the output of a named block to the class, and the resulting
+string is displayed. Note the presence of the "_cubictemp_unescaped" attribute
+in the ColourPython class. This makes sure that our object can use special HTML
+characters in its expansion, without interference from the escaping
+mechanism.</p>
+

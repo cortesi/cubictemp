@@ -1,0 +1,37 @@
+<!--(block foo)-->
+	<!--(for this in range(5))
+        @!this!@
+	(end)-->
+<!--(end)-->
+@!foo!@
+
+<!--(block bar)-->
+	<!--(for this in range(2))
+        @!this!@
+		<!--(for this in range(2))
+            @!this!@
+		(end)-->
+	(end)-->
+<!--(end)-->
+@!bar!@
+
+<!--(for this in range(2))
+	<!--(block moo)
+        bar
+	(end)-->
+    @!moo!@
+(end)-->
+
+<!--(block outer)
+    barg
+(end)-->
+<!--(block one)
+    @!outer!@
+(end)-->
+@!one!@
+
+<!--(for this in range(2))
+	<!--(for that in range(2))
+        @!this!@@!that!@
+	(end)-->
+(end)-->

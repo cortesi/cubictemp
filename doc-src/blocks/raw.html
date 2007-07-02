@@ -1,0 +1,73 @@
+
+<p> It sometimes happens that we have a piece of text that has two
+
+<!--(raw)-->
+@
+<!--(end)-->
+
+or
+ 
+<!--(raw)-->
+$
+<!--(end)-->
+
+symbols on the same line. If we just passed this text into Cubictemp, it would
+try to evaluate the text between the two symbols as a Python expression. This
+is likely to cause an exception, and would certainly not produce the output we
+expect. The answer to this problem is to wrap the piece of text in a raw block.
+This tells Cubictemp that it should not be interpreted, but rather that it
+should be inserted in the rendered document untouched:</p>
+
+<!--(block foo)-->
+	<!--(raw)-->
+        <!--(raw)-->
+            @!bar!@
+        <!--(end)-->
+	<!--(end)-->
+<!--(end)-->
+<code class="template">
+	@!escape(repr(foo))!@<br>
+</code>
+
+<p> The directives starting and ending a block are removed from the final output.
+The template above would therefore result in output like this:</p>
+
+<!--(block foo)-->
+	<!--(raw)-->
+	@!bar!@
+	<!--(end)-->
+<!--(end)-->
+<code class="output">
+	@!escape(repr(foo))!@<br>
+</code>
+
+<p> A raw block ends at a <b>matching</b> "end" directive. This means that a raw
+block can contain well-formed CubicTemp template code, as long as each block
+start has a corresponding block end. For instance, this is a valid raw
+block: </p>
+
+<!--(block foo)-->
+	<!--(raw)-->
+        <!--(raw)-->
+            <!--(raw)-->
+                @!bar!@
+            <!--(end)-->
+        <!--(end)-->
+	<!--(end)-->
+<!--(end)-->
+<code class="template">
+	@!escape(repr(foo))!@<br>
+</code>
+
+<p> Which renders to the following:</p>
+
+<!--(block foo)-->
+    <!--(raw)-->
+        <!--(raw)-->
+            @!bar!@
+        <!--(end)-->
+    <!--(end)-->
+<!--(end)-->
+<code class="output">
+	@!escape(repr(foo))!@<br>
+</code>

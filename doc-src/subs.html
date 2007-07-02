@@ -1,0 +1,86 @@
+
+<h2> Introduction to Substitutions </h2>
+
+<p> From the examples in the previous section, it may seem that text between the 
+
+<!--(raw)-->
+<code class="template">@!...!@</code> 
+<!--(end)-->
+
+delimiters is treated simply as an identifier to be replaced. This is not the
+case - Cubictemp actually evaluates everything between the delimiters as an
+expression in the namespace specified by the keyword arguments. It is the
+result of this evaluation that is converted to a string with the built-in
+function <code>repr</code>, and placed in the template. This means that
+<i>any</i> valid Python expression which can be evaluated in the indicated
+namespace can appear in a substitution tag.</p>
+
+<p>To illustrate this, take a look at the template below:</p>
+
+<code class="template">
+<!--(raw)-->
+	@!foo!@ times two is @!foo*2!@<br>
+	@!foo!@ squared is @!foo*foo!@<br>
+<!--(end)-->
+</code>
+
+<p> ...and this accompanying code snippet: </p>
+
+
+<!--(block code)
+import cubictemp
+
+temp = cubictemp.File("template", foo=3)
+print temp
+(end)-->
+<code>
+	@!colourPython(code)!@
+</code>
+
+<p> The output here would look like this:</p>
+
+
+<code class="output">
+<!--(raw)-->
+	3 times two is 6<br>
+	3 squared is 9<br>
+<!--(end)-->
+</code>
+
+<p> Similarly, if <code>"foo"</code> happened to be a dictionary, we could extract
+a value from it inside a template like this:</p>
+
+<code class="template">
+	<!--(raw)-->
+		@!foo["bar"]!@ 
+	<!--(end)-->
+</code>
+
+<p> And if <code>"foo"</code> was an object with an attribute <code>"x"</code>,
+we could reference the attribute by saying:</p>
+
+<code class="template">
+	<!--(raw)-->
+		@!foo.x!@ 
+	<!--(end)-->
+</code>
+
+<p> This ability to evaluate expressions makes Cubictemp templates very
+powerful and expressive. </p>
+
+<h2> A word about expressions and statements</h2>
+
+<p> At this point it is important to distinguish between Python expressions and
+Python statements. Python <b>expressions</b> can conveniently be thought of as
+anything that can be on the right-hand-side of an equals sign. Arithmetic
+operators, boolen operators, parentheses for grouping, method/function calls,
+object instantiation and conditional expressions are all valid components of
+expressions. Python <b>statements</b>, on the other hand, include things like
+"while", "print", variable assignment and full "if" blocks. CubicTemp allows
+<i>only expressions</i> in places where it evaluates Python code. This is a
+deliberate choice - limiting templates to expressions ensures that program
+logic lives in the Python program files where they belong. This enforces a hard
+separation between code and presentation, making it easier to unit-test, change
+and maintain the application as a whole.</p>
+
+

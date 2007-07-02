@@ -1,0 +1,132 @@
+
+<p> Much of the power and utility of Cubictemp templates lie in the use of
+block constructs.  A block is exactly what it sounds like - a chunk of text,
+that may contain newlines, and that is acted on in some way by the template.
+There are 3 types of block in Cubictemp:</p>
+
+<ul>
+
+    <li> <a href="blocks/raw.html">Raw blocks</a> blocks mark sections
+    of text that Cubictemp should not process.</li>
+
+    <li> <a href="blocks/named.html">Named blocks</a> provide a way of
+    "naming" a piece of text, and then performing some manipulation on it.
+    </li>
+
+    <li> <a href="blocks/repeat.html">Repeat blocks</a> allow the
+    insertion of sequences of data. </li>
+
+</ul>
+
+<p> Each of these will be discussed in turn in the following sections.</p>
+
+
+<h2> Block Syntax </h2>
+
+
+<p> Cubictemp blocks all have the same basic syntax: </p> 
+
+<!--(block foo)-->
+    <!--(raw)-->
+        <!--(<block definition>)-->
+            text
+        <!--(end)-->
+    <!--(end)-->
+<!--(end)-->
+<code class="template">
+	@!escape(repr(foo))!@<br>
+</code>
+
+<p> ... where @!escape("<block definition>")!@ varies between block types. Blocks
+can be nested as deeply as you wish, as long as two simple rules are followed: </p>
+
+<ul>
+    <li> The "end" directive for a block must have the same indentation as the
+    beginning of the block.</li>
+
+    <li> A nested block should have a greater level of indentation than an
+    enclosing block. </li>
+</ul>
+
+<p> For instance, this is a well-formed nested block definition: </p>
+
+
+<!--(block foo)-->
+    <!--(raw)-->
+        <!--(<block definition>)-->
+            <!--(<block definition>)-->
+                text
+            <!--(end)-->
+            text
+        <!--(end)-->
+    <!--(end)-->
+<!--(end)-->
+<code class="template">
+	@!escape(repr(foo))!@<br>
+</code>
+
+
+<p> While this is not: </p>
+
+
+<!--(block foo)-->
+    <!--(raw)-->
+        <!--(<block definition>)-->
+        <!--(<block definition>)-->
+            text
+        <!--(end)-->
+        text
+        <!--(end)-->
+    <!--(end)-->
+<!--(end)-->
+<code class="template">
+	@!escape(repr(foo))!@<br>
+</code>
+
+
+<p>  Readability dictates that the first example is vastly preferable anyway -
+it just so happens that the internal workings of CubicTemp makes this
+mandatory.</p>
+
+
+<h2> Closed and half-open Block Tags</h2>
+
+<p> Before we go on to discuss the use and properties of the different block
+types, take a moment to look at the block syntax above. Notice that the start
+and end directives of the block are crafted to look like HTML comments.  This
+means that when you view your unrendered template in a browser, these
+directives are invisible, but the contents are viewable. This is handy in some
+circumstances, but it might not always be what we want. In fact, CubicTemp
+block directives have two different "flavours". The first, in which the
+directives are comments, but content is visible, you have already met: </p>
+
+<!--(block foo)-->
+	<!--(raw)-->
+        <!--(raw)-->
+            @!bar!@
+        <!--(end)-->
+	<!--(end)-->
+<!--(end)-->
+<code class="template">
+	@!escape(repr(foo))!@<br>
+</code>
+
+<p> Sometimes, however, we would prefer to have the entire block appear as a
+comment. The second block "flavour" allows us to write blocks that are HTML
+comments in their entirety.</p>
+
+<!--(block foo)-->
+	<!--(raw)-->
+        <!--(raw)
+            @!bar!@
+        (end)-->
+	<!--(end)-->
+<!--(end)-->
+<code class="template">
+	@!escape(repr(foo))!@<br>
+</code>
+
+<p> There is <b>no</b> functional difference whatsoever between the two
+flavours. The two flavours simply allow us to craft templates that can easily
+be viewed in a web-browser, without being rendered first.  We will work through
+examples of this in the discussion of repeat blocks and named blocks.</p>

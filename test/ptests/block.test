@@ -1,0 +1,26 @@
+<!--(block one)
+    one
+(end)-->
+@!one!@
+
+<!--(block two)-->
+    two
+<!--(end)-->
+@!two!@
+
+<!--(block three)-->
+    @!bar!@
+    @!two!@
+<!--(end)-->
+@!three!@
+
+<!--(block four)-->
+    @!bar!@
+    @!hoo!@
+<!--(end)-->
+@!four(dict(bar="hoink", hoo="farble"))!@
+
+<!--(block foo)-->
+    @!bar!@
+<!--(end)-->
+@!foo(dict(bar="hoink"))!@

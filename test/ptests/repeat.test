@@ -1,0 +1,23 @@
+<!--(for this in range(3))-->
+    one
+<!--(end)-->
+
+<!--(for this in range(3))
+    two
+(end)-->
+
+<!--(for this in range(3))-->  
+    three
+<!--(end)-->
+
+<!--(for this in range(3))
+    four
+(end)-->
+
+<!--(for this in range(3))
+    @!this!@
+(end)-->
+
+<!--(for this in range(3))
+    @!this!@@!this!@
+(end)-->
