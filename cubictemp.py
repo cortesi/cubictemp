@@ -69,12 +69,14 @@ class _Eval:
 
 
 class _Expression(_Eval):
-    def __init__(self, expr, flavor, pos, tmpl):
+    def __init__(self, expr, flavor, pos, tmpl, ns):
         self.expr, self.flavor = expr, flavor
         self.pos, self.tmpl = pos, tmpl
+        self.ns = ns
         self._ecache = self._compile(expr, pos, tmpl)
 
     def __call__(self, **ns):
+        ns.update(self.ns)
         ret = self._eval(self._ecache, ns)
         if isinstance(ret, _Block):
             ret = ret(**ns)
@@ -85,15 +87,13 @@ class _Expression(_Eval):
 
 
 class _Block(list, _Eval):
-    def __init__(self, processor, pos, tmpl):
-        self.ns, self.processor = {}, processor
+    def __init__(self, processor, pos, tmpl, ns):
+        self.ns, self.processor = ns, processor
         self.pos, self.tmpl = pos, tmpl
         if processor:
             self._ecache = self._compile(processor, pos, tmpl)
 
     def __call__(self, **ns):
-        ns = ns.copy()
-        ns.update(self.ns)
         r = "".join([i(**ns) for i in self])
         if self.processor:
             proc = self._eval(self._ecache, ns)
@@ -103,15 +103,13 @@ class _Block(list, _Eval):
 
 
 class _Iterable(list, _Eval):
-    def __init__(self, iterable, varname, pos, tmpl):
+    def __init__(self, iterable, varname, pos, tmpl, ns):
         self.iterable, self.varname = iterable, varname
         self.pos, self.tmpl = pos, tmpl
+        self.ns = ns
         self._ecache = self._compile(iterable, pos, tmpl)
-        self.ns = {}
 
     def __call__(self, **ns):
-        ns = ns.copy()
-        ns.update(self.ns)
         loopIter = self._eval(self._ecache, ns)
         try:
             loopIter = iter(loopIter)
@@ -146,7 +144,7 @@ class Temp:
         self.nsDict, self.txt = nsDict, txt
         matches = self._reParts.finditer(txt)
         pos = 0
-        self.block = _Block(None, pos, self)
+        self.block = _Block(None, pos, self, {})
         stack = [self.block]
         for m in matches:
             parent = stack[-1]
@@ -155,15 +153,21 @@ class Temp:
             pos = m.end()
             g = m.groupdict()
             if g["blockName"]:
-                b = _Block(g["processor"], pos, self)
+                b = _Block(g["processor"], pos, self, parent.ns.copy())
                 parent.ns[g["blockName"]] = b
                 stack.append(b)
             if g["processor"]:
-                b = _Block(g["processor"], pos, self)
+                b = _Block(g["processor"], pos, self, parent.ns.copy())
                 stack.append(b)
                 parent.append(b)
             elif g["iterable"]:
-                b = _Iterable(g["iterable"], g["varName"], pos, self)
+                b = _Iterable(
+                    g["iterable"],
+                    g["varName"],
+                    pos,
+                    self,
+                    parent.ns.copy()
+                )
                 parent.append(b)
                 stack.append(b)
             elif g["end"]:
@@ -171,7 +175,7 @@ class Temp:
                 if not stack:
                     raise TempException("Unbalanced block.", pos, self)
             elif g["expr"]:
-                e = _Expression(g["expr"], g["flavor"], pos, self)
+                e = _Expression(g["expr"], g["flavor"], pos, self, parent.ns.copy())
                 parent.append(e)
         if pos < len(txt):
             stack[-1].append(_Text(txt[pos:]))

@@ -45,12 +45,12 @@ class u_Expression(pylid.TestCase):
         self.s = cubictemp.Temp("text")
 
     def test_call(self):
-        e = cubictemp._Expression("foo", "@", 0, self.s)
+        e = cubictemp._Expression("foo", "@", 0, self.s, {})
         assert e(foo="bar") == "bar"
 
     def test_block(self):
-        e = cubictemp._Expression("foo", "@", 0, self.s)
-        t = cubictemp._Block(None, 0, self.s)
+        e = cubictemp._Expression("foo", "@", 0, self.s, {})
+        t = cubictemp._Block(None, 0, self.s, {})
         t.append(cubictemp._Text("bar"))
         assert e(foo=t) == "bar"
 
@@ -59,11 +59,11 @@ class u_Expression(pylid.TestCase):
             "invalid expression",
             cubictemp._Expression,
             "for x", "@",
-            0, self.s
+            0, self.s, {}
         )
 
     def test_namerr(self):
-        e = cubictemp._Expression("foo", "@", 0, self.s)
+        e = cubictemp._Expression("foo", "@", 0, self.s, {})
         self.failWith(
             "NameError",
             e,
@@ -72,7 +72,7 @@ class u_Expression(pylid.TestCase):
     def test_escaping(self):
         e = cubictemp._Expression(
             "foo", "@",
-            0, "foo"
+            0, "foo", {}
         )
         f = e(foo="<>")
         assert "&lt;" in f
@@ -85,7 +85,7 @@ class u_Expression(pylid.TestCase):
             def __str__(self):
                 return "<>"
         t = T()
-        e = cubictemp._Expression("foo", "@", 0, "foo")
+        e = cubictemp._Expression("foo", "@", 0, "foo", {})
         f = e(foo=t)
         assert "<" in f
         assert ">" in f
@@ -102,23 +102,20 @@ class uBlock(pylid.TestCase):
         self.s = cubictemp.Temp("text")
 
     def test_call(self):
-        t = cubictemp._Block(None, 0, self.s)
-        t.ns["foo"] = cubictemp._Block(None, 0, self.s)
-        t.ns["foo"].append(cubictemp._Text("bar"))
-        t.append(cubictemp._Expression("foo", "@", 0, "foo"))
-        assert t.ns["foo"]() == "bar"
+        t = cubictemp._Block(None, 0, self.s, {})
+        t.append(cubictemp._Text("bar"))
         assert t() == "bar"
 
     def test_processor(self):
-        t = cubictemp._Block("dummyproc", 0, self.s)
+        t = cubictemp._Block("dummyproc", 0, self.s, {})
         t.append(cubictemp._Text("foo"))
         assert t(dummyproc=dummyproc) == "::foo::"
 
 
 class uIterable(pylid.TestCase):
     def test_call(self):
-        t = cubictemp._Iterable("foo", "bar", 0, "foo")
-        t.append(cubictemp._Expression("bar", "@", 0, "foo"))
+        t = cubictemp._Iterable("foo", "bar", 0, "foo", {})
+        t.append(cubictemp._Expression("bar", "@", 0, "foo", {}))
         assert t(foo=[1, 2, 3]) == "123"
 
 
@@ -193,3 +190,50 @@ class uTemp(pylid.TestCase):
         """
         t = cubictemp.Temp(s)
         assert "::one::" in t(dummyproc=dummyproc)
+
+    def test_namespace_err(self):
+        s = """
+            @!one!@
+            <!--(block one)-->one<!--(end)-->
+        """
+        t = cubictemp.Temp(s)
+        self.failWith("not defined", t)
+
+    def test_namespace_follow(self):
+        s = """
+            <!--(block one)-->one<!--(end)-->
+            @!one!@
+        """
+        t = cubictemp.Temp(s)
+        assert t().strip() == "one"
+
+    def test_namespace_follow(self):
+        s = """
+            <!--(block one)-->one<!--(end)-->
+            @!one!@
+            <!--(block one)-->two<!--(end)-->
+            @!one!@
+        """
+        t = str(cubictemp.Temp(s))
+        assert "one" in t
+        assert "two" in t
+
+    def test_namespace_nest(self):
+        s = """
+            <!--(block one)-->foo<!--(end)-->
+            <!--(block one)-->
+                <!--(block two)-->
+                    @!one!@
+                <!--(end)-->
+                @!two!@
+            <!--(end)-->
+            @!one!@
+            <!--(block one)-->bar<!--(end)-->
+            @!one!@
+        """
+        t = str(cubictemp.Temp(s))
+        assert "foo" in t
+        assert "bar" in t
+
+
+
