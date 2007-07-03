@@ -177,7 +177,7 @@ class Temp:
             stack[-1].append(_Text(txt[pos:]))
 
     def __str__(self):
-        return self.block(**self.nsDict)
+        return self()
 
     def __call__(self, **override):
         ns = self.nsDict.copy()
