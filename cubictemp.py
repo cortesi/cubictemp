@@ -130,7 +130,7 @@ class Temp:
         (<!--\(\s*               
             (
                     for\s+(?P<varName>\w+)\s+in\s+(?P<iterable>.+)
-                |   block\s+(?P<blockName>\w+)? \s* (\|\s*(?P<processor>\w+))?
+                |   block(\s+(?P<blockName>\w+))? \s* (\|\s*(?P<processor>\w+))?
             )
         \s*\)(-->)?) | 
         # The end of a tag

@@ -235,5 +235,12 @@ class uTemp(pylid.TestCase):
         assert "foo" in t
         assert "bar" in t
 
+    def test_blockspacing(self):
+        s = """
+            <!--(block|dummyproc)-->one<!--(end)-->
+        """
+        t = cubictemp.Temp(s)
+        assert t(dummyproc=dummyproc).strip() == "::one::"
+
 
 
