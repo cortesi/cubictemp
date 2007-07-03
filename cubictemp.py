@@ -48,7 +48,7 @@ class _Text:
     def __init__(self, txt):
         self.txt = txt
 
-    def __call__(self, ns):
+    def __call__(self, **ns):
         return self.txt
 
 
@@ -74,10 +74,10 @@ class _Expression(_Eval):
         self.pos, self.tmpl = pos, tmpl
         self._ecache = self._compile(expr, pos, tmpl)
 
-    def __call__(self, ns):
+    def __call__(self, **ns):
         ret = self._eval(self._ecache, ns)
         if isinstance(ret, _Block):
-            ret = ret(ns)
+            ret = ret(**ns)
         if self.flavor == "@":
             if not getattr(ret, "_cubictemp_unescaped", 0):
                 return escape(str(ret))
@@ -91,10 +91,10 @@ class _Block(list, _Eval):
         if processor:
             self._ecache = self._compile(processor, pos, tmpl)
 
-    def __call__(self, ns):
+    def __call__(self, **ns):
         ns = ns.copy()
         ns.update(self.ns)
-        r = "".join([i(ns) for i in self])
+        r = "".join([i(**ns) for i in self])
         if self.processor:
             proc = self._eval(self._ecache, ns)
             return proc(r)
@@ -109,7 +109,7 @@ class _Iterable(list, _Eval):
         self._ecache = self._compile(iterable, pos, tmpl)
         self.ns = {}
 
-    def __call__(self, ns):
+    def __call__(self, **ns):
         ns = ns.copy()
         ns.update(self.ns)
         loopIter = self._eval(self._ecache, ns)
@@ -121,7 +121,7 @@ class _Iterable(list, _Eval):
         s = []
         for i in loopIter:
             ns[self.varname] = i
-            s.append("".join([i(ns) for i in self]))
+            s.append("".join([i(**ns) for i in self]))
         return "".join(s)
 
 
@@ -177,12 +177,12 @@ class Temp:
             stack[-1].append(_Text(txt[pos:]))
 
     def __str__(self):
-        return self.block(self.nsDict)
+        return self.block(**self.nsDict)
 
     def __call__(self, **override):
         ns = self.nsDict.copy()
         ns.update(override)
-        return self.block(ns)
+        return self.block(**ns)
 
 
 class File(Temp):

@@ -17,7 +17,7 @@ tmpl = """
         <!--(block foo)
             @!one!@
         (end)-->
-        @!foo(dict(one="<%s>"%i))!@
+        @!foo(one="<%s>"%i)!@
     (end)-->
     lorem ipsum sic dolor samet
     lorem ipsum sic dolor samet

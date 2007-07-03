@@ -19,9 +19,9 @@ tmpl = """
         <!--(block foo)
             @!one!@
         (end)-->
-        @!foo(dict(one="<%s>"%i))!@ @!foo(dict(one="<%s>"%i))!@
-        @!foo(dict(one="<%s>"%i))!@ @!foo(dict(one="<%s>"%i))!@
-        @!foo(dict(one="<%s>"%i))!@
+        @!foo(one="<%s>"%i)!@ @!dict(one="<%s>"%i)!@
+        @!foo(one="<%s>"%i)!@ @!dict(one="<%s>"%i)!@
+        @!foo(one="<%s>"%i)!@
     (end)-->
     @!1!@
     @!1!@
@@ -57,4 +57,4 @@ def profile():
     s.print_stats()
 
 if __name__ == "__main__":
-    profile()
+    main()

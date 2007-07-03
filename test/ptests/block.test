@@ -18,9 +18,9 @@
     @!bar!@
     @!hoo!@
 <!--(end)-->
-@!four(dict(bar="hoink", hoo="farble"))!@
+@!four(bar="hoink", hoo="farble")!@
 
 <!--(block foo)-->
     @!bar!@
 <!--(end)-->
-@!foo(dict(bar="hoink"))!@
+@!foo(bar="hoink")!@

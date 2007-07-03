@@ -46,13 +46,13 @@ class u_Expression(pylid.TestCase):
 
     def test_call(self):
         e = cubictemp._Expression("foo", "@", 0, self.s)
-        assert e(dict(foo="bar")) == "bar"
+        assert e(foo="bar") == "bar"
 
     def test_block(self):
         e = cubictemp._Expression("foo", "@", 0, self.s)
         t = cubictemp._Block(None, 0, self.s)
         t.append(cubictemp._Text("bar"))
-        assert e(dict(foo=t)) == "bar"
+        assert e(foo=t) == "bar"
 
     def test_syntaxerr(self):
         self.failWith(
@@ -67,7 +67,6 @@ class u_Expression(pylid.TestCase):
         self.failWith(
             "NameError",
             e,
-            {}
         )
 
     def test_escaping(self):
@@ -75,7 +74,7 @@ class u_Expression(pylid.TestCase):
             "foo", "@",
             0, "foo"
         )
-        f = e(dict(foo="<>"))
+        f = e(foo="<>")
         assert "&lt;" in f
         assert not "<" in f
         assert not ">" in f
@@ -87,7 +86,7 @@ class u_Expression(pylid.TestCase):
                 return "<>"
         t = T()
         e = cubictemp._Expression("foo", "@", 0, "foo")
-        f = e(dict(foo=t))
+        f = e(foo=t)
         assert "<" in f
         assert ">" in f
 
@@ -95,7 +94,7 @@ class u_Expression(pylid.TestCase):
 class uText(pylid.TestCase):
     def test_call(self):
         t = cubictemp._Text("foo")
-        assert t({}) == "foo"
+        assert t() == "foo"
         
 
 class uBlock(pylid.TestCase):
@@ -107,20 +106,20 @@ class uBlock(pylid.TestCase):
         t.ns["foo"] = cubictemp._Block(None, 0, self.s)
         t.ns["foo"].append(cubictemp._Text("bar"))
         t.append(cubictemp._Expression("foo", "@", 0, "foo"))
-        assert t.ns["foo"]({}) == "bar"
-        assert t({}) == "bar"
+        assert t.ns["foo"]() == "bar"
+        assert t() == "bar"
 
     def test_processor(self):
         t = cubictemp._Block("dummyproc", 0, self.s)
         t.append(cubictemp._Text("foo"))
-        assert t(dict(dummyproc=dummyproc)) == "::foo::"
+        assert t(dummyproc=dummyproc) == "::foo::"
 
 
 class uIterable(pylid.TestCase):
     def test_call(self):
         t = cubictemp._Iterable("foo", "bar", 0, "foo")
         t.append(cubictemp._Expression("bar", "@", 0, "foo"))
-        assert t(dict(foo=[1, 2, 3])) == "123"
+        assert t(foo=[1, 2, 3]) == "123"
 
 
 class uTemp(pylid.TestCase):
