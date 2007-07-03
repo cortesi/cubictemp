@@ -20,6 +20,6 @@ Rewrite
 Block types:
 
 <--(block named)
-<--(block named|processor)
-<--(raw|processor)
+<--(block named||processor)
+<--(process(i) for i in processor)
 

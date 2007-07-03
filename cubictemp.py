@@ -1,7 +1,39 @@
 #!/usr/local/bin/python
 import cgi, re, itertools
+context = 2
 
-class TempException(Exception): pass
+class TempException(Exception):
+    def __init__(self, val, pos, tmpl):
+        Exception.__init__(self, val)
+        self.val, self.pos, self.tmpl = val, pos, tmpl
+        self.lineNo, self.context = self._getLines(tmpl.txt, pos, context)
+
+    def _getLines(self, txt, pos, context):
+        lines = txt.splitlines(True)
+        cur = 0
+        for i, l in enumerate(lines):
+            cur += len(l)
+            if cur > pos:
+                break
+        if i < context:
+            startc = 0
+        else:
+            startc = i - context
+        if i > (len(lines)-context):
+            endc = len(lines)
+        else:
+            endc = i + context + 1
+        return i + 1, [j.strip() for j in lines[startc:endc]]
+
+    def __str__(self):
+        ret = [
+            "TempException: %s"%self.val,
+            "\tContext: line %s in %s:"%(self.lineNo, self.tmpl.name),
+        ]
+        ret.extend(["\t\t" + i for i in self.context])
+        return "\n".join(ret)
+
+
 
 def escape(s):
     """
@@ -16,19 +48,19 @@ def escape(s):
     return s
 
 
-def _compile(expr):
+def _compile(expr, pos, tmpl):
         try:
             return compile(expr, "<string>", "eval")
         except SyntaxError, value:
-            s = 'Invalid expression in template: "%s"'%(expr)
-            raise TempException(s)
+            s = 'Invalid expression: "%s"'%(expr)
+            raise TempException(s, pos, tmpl)
 
 
 class _Expression:
-    def __init__(self, expr, flavor, pos, txt):
+    def __init__(self, expr, flavor, pos, tmpl):
         self.expr, self.flavor = expr, flavor
-        self.pos, self.txt = pos, txt
-        self._ecache = _compile(expr)
+        self.pos, self.tmpl = pos, tmpl
+        self._ecache = _compile(expr, pos, tmpl)
 
     def __call__(self, ns):
         try:
@@ -37,7 +69,7 @@ class _Expression:
                 ret = ret(ns)
         except NameError, value:
             s = 'NameError: "%s"'%value
-            raise TempException(s)
+            raise TempException(s, self.pos, self.tmpl)
         if self.flavor == "@":
             if not getattr(ret, "_cubictemp_unescaped", 0):
                 return escape(str(ret))
@@ -63,10 +95,10 @@ class _Block(list):
 
 
 class _Iterable(list):
-    def __init__(self, iterable, varname, pos, txt):
+    def __init__(self, iterable, varname, pos, tmpl):
         self.iterable, self.varname = iterable, varname
-        self.pos, self.txt = pos, txt
-        self._ecache = _compile(iterable)
+        self.pos, self.tmpl = pos, tmpl
+        self._ecache = _compile(iterable, pos, tmpl)
         self.ns = {}
 
     def __call__(self, ns):
@@ -76,11 +108,12 @@ class _Iterable(list):
             loopIter = eval(self._ecache, {}, ns)
         except NameError, value:
             s = 'NameError: "%s"'%value
-            raise TempException(s)
+            raise TempException(s, self.pos, self.tmpl)
         try:
             loopIter = iter(loopIter)
         except TypeError:
-            raise TempException("Can not iterate over %s"%self.iterable)
+            s = "Can not iterate over %s"%self.iterable
+            raise TempException(s, self.pos, self.tmpl)
         s = []
         for i in loopIter:
             ns[self.varname] = i
@@ -95,7 +128,7 @@ class Temp:
         (<!--\(\s*               
             (
                     for\s+(?P<varName>\w+)\s+in\s+(?P<iterable>.+)
-                |   block\s+(?P<blockName>\w+)
+                |   block\s+ (?P<process>\|)? (?P<blockName>\w+)
             )
         \s*\)(-->)?) | 
         # The end of a tag
@@ -104,6 +137,7 @@ class Temp:
         ((?P<flavor>@|\$)!(?P<expr>.+?)!(?P=flavor))
     """
     _reParts = re.compile(_bStart, re.X|re.M)
+    name = "<string>"
     def __init__(self, txt, **nsDict):
         self.nsDict, self.txt = nsDict, txt
         self.block = _Block()
@@ -121,13 +155,13 @@ class Temp:
                     b = _Block()
                     parent.ns[g["blockName"]] = b
                 else:
-                    b = _Iterable(g["iterable"], g["varName"], pos, txt)
+                    b = _Iterable(g["iterable"], g["varName"], pos, self)
                     parent.append(b)
                 stack.append(b)
             elif g["end"]:
                 stack.pop()
             elif g["expr"]:
-                e = _Expression(g["expr"], g["flavor"], pos, txt)
+                e = _Expression(g["expr"], g["flavor"], pos, self)
                 stack[-1].append(e)
         if pos < len(txt):
             stack[-1].append(_Text(txt[pos:]))
@@ -143,12 +177,6 @@ class Temp:
 
 class File(Temp):
     def __init__(self, filename, **nsDict):
-        self.filename = filename
+        self.name = filename
         data = open(filename).read()
         Temp.__init__(self, data, **nsDict)
-
-    def __str__(self):
-        try:
-            return Temp.__str__(self)
-        except TempException, val:
-            raise TempException, "%s: %s"%(self.filename, str(val))

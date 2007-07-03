@@ -2,13 +2,52 @@ import pylid
 import cubictemp
 
 
+class uTempException(pylid.TestCase):
+    def setUp(self):
+        self.s = cubictemp.Temp("text")
+        self.t = cubictemp.TempException("foo", 0, self.s)
+
+    def test_getLines(self):
+        txt = """
+           one
+           two
+           three
+        """
+        x = txt.find("one")
+        i, ctx = self.t._getLines(txt, x, 1)
+        assert i == 2
+        assert len(ctx) == 3
+        assert ctx[1].strip() == "one"
+
+        x = txt.find("three")
+        i, ctx = self.t._getLines(txt, x, 2)
+        assert i == 4
+        assert len(ctx) == 4
+
+    def test_format(self):
+        s = """
+            <!--(block foo)-->
+                @!foo!@
+            <!--(end)-->
+            @![!@
+            <!--(block bar)-->
+                @!foo!@
+            <!--(end)-->
+        """
+        self.failWith("line 5", cubictemp.Temp, s)
+
+
+
 class u_Expression(pylid.TestCase):
+    def setUp(self):
+        self.s = cubictemp.Temp("text")
+
     def test_call(self):
-        e = cubictemp._Expression("foo", "@", 0, "foo")
+        e = cubictemp._Expression("foo", "@", 0, self.s)
         assert e(dict(foo="bar")) == "bar"
 
     def test_block(self):
-        e = cubictemp._Expression("foo", "@", 0, "foo")
+        e = cubictemp._Expression("foo", "@", 0, self.s)
         t = cubictemp._Block()
         t.append(cubictemp._Text("bar"))
         assert e(dict(foo=t)) == "bar"
@@ -18,11 +57,11 @@ class u_Expression(pylid.TestCase):
             "invalid expression",
             cubictemp._Expression,
             "for x", "@",
-            0, "foo"
+            0, self.s
         )
 
     def test_namerr(self):
-        e = cubictemp._Expression("foo", "@", 0, "foo")
+        e = cubictemp._Expression("foo", "@", 0, self.s)
         self.failWith(
             "NameError",
             e,
