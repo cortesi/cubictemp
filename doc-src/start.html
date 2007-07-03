@@ -10,8 +10,8 @@ is, taking one piece of text, and inserting it into another. Consider the
 following line:</p>
 
 <code class="template">
-<!--(raw)-->
-	Hello @ !foo!@.
+<!--(block | cubescript)-->
+Hello @_!foo!@.
 <!--(end)-->
 </code>
 
@@ -19,22 +19,20 @@ following line:</p>
 substitution tag - 
 
 <code class="template">
-<!--(raw)-->
-	@!foo!@
+<!--(block | cubescript)-->
+@_!foo!@
 <!--(end)-->
 </code>
 
 - which we can use to insert the word "walrus" at the appropriate spot like
 this: </p>
 
-<!--(block code)-->
-    <!--(raw)-->
+<!--(block | cubescript)-->
 import cubictemp
 
 template = "Hello @ !foo!@."
 temp = cubictemp.Temp(template, foo="walrus")
 print temp
-    <!--(end)-->
 <!--(end)-->
 @ !colourPython(code)!@
 

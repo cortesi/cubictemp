@@ -26,68 +26,14 @@ There are 3 types of block in Cubictemp:</p>
 
 <p> Cubictemp blocks all have the same basic syntax: </p> 
 
-<!--(block foo)-->
-    <!--(raw)-->
-        <!--(<block definition>)-->
-            text
-        <!--(end)-->
-    <!--(end)-->
-<!--(end)-->
-<code class="template">
-	@!escape(repr(foo))!@<br>
-</code>
-
-<p> ... where @!escape("<block definition>")!@ varies between block types. Blocks
-can be nested as deeply as you wish, as long as two simple rules are followed: </p>
-
-<ul>
-    <li> The "end" directive for a block must have the same indentation as the
-    beginning of the block.</li>
-
-    <li> A nested block should have a greater level of indentation than an
-    enclosing block. </li>
-</ul>
-
-<p> For instance, this is a well-formed nested block definition: </p>
-
-
-<!--(block foo)-->
-    <!--(raw)-->
-        <!--(<block definition>)-->
-            <!--(<block definition>)-->
-                text
-            <!--(end)-->
-            text
-        <!--(end)-->
-    <!--(end)-->
-<!--(end)-->
-<code class="template">
-	@!escape(repr(foo))!@<br>
-</code>
-
-
-<p> While this is not: </p>
-
-
-<!--(block foo)-->
-    <!--(raw)-->
-        <!--(<block definition>)-->
-        <!--(<block definition>)-->
-            text
-        <!--(end)-->
+<!--(block|cubescript)-->
+    <!--(<_block definition>)-->
         text
-        <!--(end)-->
-    <!--(end)-->
+    <!--(_end)-->
 <!--(end)-->
-<code class="template">
-	@!escape(repr(foo))!@<br>
-</code>
 
-
-<p>  Readability dictates that the first example is vastly preferable anyway -
-it just so happens that the internal workings of CubicTemp makes this
-mandatory.</p>
-
+<p> ... where ("<block definition>") varies between block types. Blocks can be
+nested as deeply as you wish. </p>
 
 <h2> Closed and half-open Block Tags</h2>
 
@@ -100,31 +46,21 @@ circumstances, but it might not always be what we want. In fact, CubicTemp
 block directives have two different "flavours". The first, in which the
 directives are comments, but content is visible, you have already met: </p>
 
-<!--(block foo)-->
-	<!--(raw)-->
-        <!--(raw)-->
-            @!bar!@
-        <!--(end)-->
-	<!--(end)-->
+<!--(block|cubescript)-->
+    <!--(_block foo)-->
+        @_!bar!@
+    <!--(_end)-->
 <!--(end)-->
-<code class="template">
-	@!escape(repr(foo))!@<br>
-</code>
 
 <p> Sometimes, however, we would prefer to have the entire block appear as a
 comment. The second block "flavour" allows us to write blocks that are HTML
 comments in their entirety.</p>
 
-<!--(block foo)-->
-	<!--(raw)-->
-        <!--(raw)
-            @!bar!@
-        (end)-->
-	<!--(end)-->
+<!--(block|cubescript)-->
+    <!--(_block foo)
+        @_!bar!@
+    (_end)-->
 <!--(end)-->
-<code class="template">
-	@!escape(repr(foo))!@<br>
-</code>
 
 <p> There is <b>no</b> functional difference whatsoever between the two
 flavours. The two flavours simply allow us to craft templates that can easily

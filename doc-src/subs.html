@@ -3,8 +3,8 @@
 
 <p> From the examples in the previous section, it may seem that text between the 
 
-<!--(raw)-->
-<code class="template">@!...!@</code> 
+<!--(block|cubescript)-->
+<code class="template">@_!...!@</code> 
 <!--(end)-->
 
 delimiters is treated simply as an identifier to be replaced. This is not the
@@ -18,41 +18,36 @@ namespace can appear in a substitution tag.</p>
 <p>To illustrate this, take a look at the template below:</p>
 
 <code class="template">
-<!--(raw)-->
-	@!foo!@ times two is @!foo*2!@<br>
-	@!foo!@ squared is @!foo*foo!@<br>
+<!--(block|cubescript)-->
+	@_!foo!@ times two is @_!foo*2!@<br>
+	@_!foo!@ squared is @_!foo*foo!@<br>
 <!--(end)-->
 </code>
 
 <p> ...and this accompanying code snippet: </p>
 
 
-<!--(block code)
+<!--(block|pysyntax)-->
 import cubictemp
 
 temp = cubictemp.File("template", foo=3)
 print temp
-(end)-->
-<code>
-	@!colourPython(code)!@
-</code>
+<!--(end)-->
 
 <p> The output here would look like this:</p>
 
 
 <code class="output">
-<!--(raw)-->
 	3 times two is 6<br>
 	3 squared is 9<br>
-<!--(end)-->
 </code>
 
 <p> Similarly, if <code>"foo"</code> happened to be a dictionary, we could extract
 a value from it inside a template like this:</p>
 
 <code class="template">
-	<!--(raw)-->
-		@!foo["bar"]!@ 
+	<!--(block|cubescript)-->
+		@_!foo["bar"]!@ 
 	<!--(end)-->
 </code>
 
@@ -60,8 +55,8 @@ a value from it inside a template like this:</p>
 we could reference the attribute by saying:</p>
 
 <code class="template">
-	<!--(raw)-->
-		@!foo.x!@ 
+	<!--(block|cubescript)-->
+		@_!foo.x!@ 
 	<!--(end)-->
 </code>
 

@@ -44,7 +44,7 @@ tmpl = """
 def main():
     start = time.time()
     t = cubictemp.Temp(tmpl)
-    for i in range(100):
+    for i in range(1000):
         str(t)
     stop = time.time()
     print stop-start

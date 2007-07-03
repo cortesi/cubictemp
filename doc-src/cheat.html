@@ -4,45 +4,29 @@
 
 <p> The Temp class should be instantiated as follows: </p>
 
-<!--(block code)-->
-    <!--(raw)-->
+<!--(block|pysyntax)-->
 Temp(input, **kwargs)
-    <!--(end)-->
 <!--(end)-->
-<code>
-	@!colourPython(code)!@
-</code>
 
 <p> Where "input" is a raw template.</p>
-
 
 <h2> The File Class </h2>
 
 <p> As for the Temp, but the path to a template is passed instead of raw
 template data: </p>
 
-<!--(block code)-->
-    <!--(raw)-->
+<!--(block|pysyntax)-->
 File(path, **kwargs)
-    <!--(end)-->
 <!--(end)-->
-<code>
-	@!colourPython(code)!@
-</code>
 
 <h2> Calling Templates and Blocks </h2>
 
 <p> Templates and blocks can be called with a set of over-ride arguments. </p>
 
-<!--(block code)-->
-    <!--(raw)-->
+<!--(block|pysyntax)-->
 x = File(path, foo=1)
 x(foo=2)
-    <!--(end)-->
 <!--(end)-->
-<code>
-	@!colourPython(code)!@
-</code>
 
 
 <h2> The templating language </h2>
@@ -50,94 +34,57 @@ x(foo=2)
 <h3> Substitution </h3>
 
 <p>
-<code class="template">
-<!--(raw)-->
-@!escaped-expression!@
+<!--(block|cubescript)-->
+@_!escaped-expression!@
 <!--(end)-->
-</code>
 </p>
 
 <p>
-<code class="template">
-<!--(raw)-->
-$!unescaped-expression!$
+<!--(block|cubescript)-->
+$_!unescaped-expression!$
 <!--(end)-->
-</code>
 </p>
 
 <h3> Block Types </h3>
 
-Raw: <br><br>
-<!--(block foo)-->
-	<!--(raw)-->
-        <!--(raw)-->
-            @!expression!@
-        <!--(end)-->
-	<!--(end)-->
-<!--(end)-->
-<code class="template">
-	@!escape(repr(foo))!@<br>
-</code><br>
-
-
 Named: <br><br>
-<!--(block foo)-->
-	<!--(raw)-->
-        <!--(block blockName)-->
-            @!expression!@
-        <!--(end)-->
-	<!--(end)-->
+<!--(block|cubescript)-->
+    <!--(_block blockName)-->
+        @_!expression!@
+    <!--(_end)-->
 <!--(end)-->
-<code class="template">
-	@!escape(repr(foo))!@<br>
-</code><br>
 
 
 Repeat: <br><br>
-<!--(block foo)-->
-	<!--(raw)-->
-        <!--(for item in listItem)-->
-            @!item!@
-        <!--(end)-->
-	<!--(end)-->
+<!--(block|cubescript)-->
+    <!--(_for item in listItem)-->
+        @_!item!@
+    <!--(_end)-->
 <!--(end)-->
-<code class="template">
-	@!escape(repr(foo))!@<br>
-</code><br>
 
 
 <h3> Block Flavours </h3>
 
 Fully commented: <br><br>
-<!--(block foo)-->
-	<!--(raw)-->
-        <!--(raw)-->
-            @!expression!@
-        <!--(end)-->
-	<!--(end)-->
+<!--(block|cubescript)-->
+    <!--(_block foo)-->
+        @_!expression!@
+    <!--(_end)-->
 <!--(end)-->
-<code class="template">
-	@!escape(repr(foo))!@<br>
-</code><br>
 
 Half commented: <br><br>
-<!--(block foo)-->
-	<!--(raw)-->
-        <!--(raw)
-            @!expression!@
-        (end)-->
-	<!--(end)-->
+<!--(block|cubescript)-->
+    <!--(_block foo)
+        @_!expression!@
+    (_end)-->
 <!--(end)-->
-<code class="template">
-	@!escape(repr(foo))!@<br>
-</code><br>
 
 
 <h3> Conditionals </h3>
 
 <code class="template">
-<!--(raw)-->
-	@!positive if cond else negative!@
+<!--(block|cubescript)-->
+	@_!positive if cond else negative!@
 <!--(end)-->
 </code><br>
 <br>

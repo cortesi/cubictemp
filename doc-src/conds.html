@@ -3,31 +3,26 @@
 a select box, by passing a list of options to a specially crafted template that
 looked like this:</p> 
 
-<!--(block foo)-->
-	<!--(raw)-->
+<!--(block|cubescript)-->
         <select>
-        <!--(for option in optionList)-->
+        <!--(_for option in optionList)-->
             <option>
-                @!option!@
+                @_!option!@
             </option>
-        <!--(end)-->
+        <!--(_end)-->
         </select>
-	<!--(end)-->
 <!--(end)-->
-<code class="template">
-	@!escape(repr(foo))!@<br>
-</code>
 
 <p> What happens if we need to pre-select one of our options? This would
-involve inserting our normal options as above, but making quite a different
+involve inserting our normal options as above, but making a different
 replacement for the pre-selected option. This type of operation can be
-performed using the conditional expressions, introduced in Python 2.5.</p>
+performed using the conditional expressions introduced in Python 2.5.</p>
 
 <p> Before constructing the template for a select box with a pre-selected
 option, let's modify the Python code snippet from the previous example to
 encode the selection status of an option in our data. </p>
 
-<!--(block code)
+<!--(block|pysyntax)-->
 import cubictemp
 
 opts = [
@@ -38,29 +33,21 @@ opts = [
 ]
 temp = cubictemp.File("template", optionList=opts)
 print temp
-(end)-->
-<code>
-	@!colourPython(code)!@
-</code>
+<!--(end)-->
 
 <p> Each option now consists of a tuple - the first element is the text value,
 and the second element is the selection status. Our template can now be changed
 as follows:</p>
 
-<!--(block foo)-->
-	<!--(raw)-->
-        <select>
-        <!--(for option in optionList)-->
-                <option @!"selected" if (option[1]) else ""!@>
-                @!option[0]!@
-                </option>
-        <!--(end)-->
-        </select>
-	<!--(end)-->
+<!--(block|cubescript)-->
+    <select>
+    <!--(_for option in optionList)-->
+            <option @_!"selected" if (option[1]) else ""!@>
+            @_!option[0]!@
+            </option>
+    <!--(_end)-->
+    </select>
 <!--(end)-->
-<code class="template">
-	@!escape(repr(foo))!@<br>
-</code><br>
 
 <p> The output from the code snippet and template looks like this:</p>
 
