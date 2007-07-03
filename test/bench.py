@@ -57,4 +57,4 @@ def profile():
     s.print_stats()
 
 if __name__ == "__main__":
-    main()
+    profile()

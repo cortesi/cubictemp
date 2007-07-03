@@ -1,3 +1,0 @@
-mdict = {
-            "bar": "rab"
-        }

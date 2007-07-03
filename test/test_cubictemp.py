@@ -1,6 +1,9 @@
 import pylid
 import cubictemp
 
+def dummyproc(s):
+    return "::%s::"%s
+
 
 class uTempException(pylid.TestCase):
     def setUp(self):
@@ -16,13 +19,13 @@ class uTempException(pylid.TestCase):
         x = txt.find("one")
         i, ctx = self.t._getLines(txt, x, 1)
         assert i == 2
-        assert len(ctx) == 3
+        assert len(ctx) == 4
         assert ctx[1].strip() == "one"
 
         x = txt.find("three")
         i, ctx = self.t._getLines(txt, x, 2)
         assert i == 4
-        assert len(ctx) == 4
+        assert len(ctx) == 5
 
     def test_format(self):
         s = """
@@ -37,7 +40,6 @@ class uTempException(pylid.TestCase):
         self.failWith("line 5", cubictemp.Temp, s)
 
 
-
 class u_Expression(pylid.TestCase):
     def setUp(self):
         self.s = cubictemp.Temp("text")
@@ -48,7 +50,7 @@ class u_Expression(pylid.TestCase):
 
     def test_block(self):
         e = cubictemp._Expression("foo", "@", 0, self.s)
-        t = cubictemp._Block()
+        t = cubictemp._Block(None, 0, self.s)
         t.append(cubictemp._Text("bar"))
         assert e(dict(foo=t)) == "bar"
 
@@ -97,13 +99,21 @@ class uText(pylid.TestCase):
         
 
 class uBlock(pylid.TestCase):
+    def setUp(self):
+        self.s = cubictemp.Temp("text")
+
     def test_call(self):
-        t = cubictemp._Block()
-        t.ns["foo"] = cubictemp._Block()
+        t = cubictemp._Block(None, 0, self.s)
+        t.ns["foo"] = cubictemp._Block(None, 0, self.s)
         t.ns["foo"].append(cubictemp._Text("bar"))
         t.append(cubictemp._Expression("foo", "@", 0, "foo"))
         assert t.ns["foo"]({}) == "bar"
         assert t({}) == "bar"
+
+    def test_processor(self):
+        t = cubictemp._Block("dummyproc", 0, self.s)
+        t.append(cubictemp._Text("foo"))
+        assert t(dict(dummyproc=dummyproc)) == "::foo::"
 
 
 class uIterable(pylid.TestCase):
@@ -150,3 +160,37 @@ class uTemp(pylid.TestCase):
     def test_call(self):
         s = cubictemp.Temp(self.s)(tag="voing")
         assert "voing" in s
+
+    def test_unbalanced(self):
+        s = """
+            <!--(end)-->
+            @!foo!@
+            <!--(end)-->
+            @!foo!@
+            one
+        """
+        self.failWith("unbalanced block", cubictemp.Temp, s)
+
+    def test_complexIterable(self):
+        s = """
+            <!--(for i in [1, 2, 3, "flibble", range(10)])-->
+                @!i!@
+            <!--(end)-->
+        """
+        s = str(cubictemp.Temp(s))
+        assert "[0, 1, 2, 3, 4" in s
+
+    def test_simpleproc(self):
+        s = """
+            <!--(block foo | dummyproc)-->one<!--(end)-->
+            @!foo!@
+        """
+        t = cubictemp.Temp(s)
+        assert "::one::" in t(dummyproc=dummyproc)
+
+    def test_inlineproc(self):
+        s = """
+            <!--(block | dummyproc)-->one<!--(end)-->
+        """
+        t = cubictemp.Temp(s)
+        assert "::one::" in t(dummyproc=dummyproc)

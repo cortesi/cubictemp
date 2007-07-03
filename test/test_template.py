@@ -1,5 +1,4 @@
 #!/usr/local/bin/python
-
 import glob, sys, os.path
 import pylid
 import cubictemp
@@ -18,23 +17,16 @@ class uBasic(pylid.TestCase):
 
 
 class TemplateTester(pylid.TestCase):
-    def _run(self, filename):
-        nsDict = {}
-        try:
-            execfile(filename + ".py", {}, nsDict)
-            nsDict = nsDict["mdict"]
-        except IOError:
-            pass
+    def _run(self, filename, nsDict):
         return str(cubictemp.File(filename + ".test", **nsDict))
 
 
 class uTemplate(TemplateTester):
     PREFIX = "ptests"
-    def _run(self, filename):
+    def _run(self, filename, nsDict={}):
         filename = os.path.join(self.PREFIX, filename)
-        mtemp = TemplateTester._run(self, filename)
+        mtemp = TemplateTester._run(self, filename, nsDict)
         out = open(filename + ".out", "r").read().split()
-        
         mout = mtemp.split()
         if not mout == out:
             print "Expected output:"
@@ -51,10 +43,16 @@ class uTemplate(TemplateTester):
         self._run("if")
 
     def test_block(self):
-        self._run("block")
+        ns = {
+            "bar": "rab",
+        }
+        self._run("block", ns)
 
     def test_commonuse(self):
-        self._run("commonuse")
+        ns = {
+             "foo": open("ptests/commonuse.data")
+        }
+        self._run("commonuse", ns)
 
     def test_nested(self):
         self._run("nested")
@@ -63,64 +61,84 @@ class uTemplate(TemplateTester):
         self._run("repeat")
 
     def test_simple(self):
-        self._run("simple")
+        ns = {
+            "foo": "one",
+            "bar": "two",
+            "boo": "three",
+            "mdict": {"entry": "foo"}
+        }
+        self._run("simple", ns)
 
 
 class uErrors(TemplateTester):
     PREFIX = "ntests"
-    def _run(self, filename):
+    def _run(self, filename, err):
         filename = os.path.join(self.PREFIX, filename)
-        try:
-            TemplateTester._run(self, filename)
-        except cubictemp.TempException, value:
-            pass
-        else:
-            self.fail("No exception on test case %s.\n" % (filename))
+        self.failWith(err, TemplateTester._run, self, filename, {})
         
     def test_blockLine(self):
-        self._run("blockLine")
+        self._run("blockLine", "'a' is not defined")
 
     def test_ifundefined(self):
-        self._run("ifundefined")
+        self._run("ifundefined", "'a' is not defined")
 
     def test_loopsyntax(self):
-        self._run("loopsyntax")
+        self._run("loopsyntax", "invalid expression")
 
     def test_loopundefined(self):
-        self._run("loopundefined")
+        self._run("loopundefined", "'a' is not defined")
 
     def test_noniterable(self):
-        self._run("noniterable")
+        self._run("noniterable", "can not iterate")
 
     def test_syntax(self):
-        self._run("syntax")
+        self._run("syntax", "invalid expression")
 
     def test_undefined(self):
-        self._run("undefined")
+        self._run("undefined", "'foo' is not defined")
 
 
 class uQuoting(TemplateTester):
     PREFIX = "qtests"
-    def _run(self, filename):
+    def _run(self, filename, nsDict={}):
         filename = os.path.join(self.PREFIX, filename)
-        output = TemplateTester._run(self, filename)
+        output = TemplateTester._run(self, filename, nsDict)
         if (output.find("<") >= 0): self.fail()
         if (output.find(">") >= 0): self.fail()
         
     def test_commonuse(self):
-        self._run("commonuse")
+        class Dummy:
+            def __repr__(self):
+                return "<foo>"
+
+        mdict = {
+            "foo":      "<foinkle>",
+            "object":   Dummy()
+        }
+        self._run("commonuse", mdict)
 
 
 class uNonQuoting(TemplateTester):
     PREFIX = "nqtests"
-    def _run(self, filename):
+    def _run(self, filename, nsDict):
         filename = os.path.join(self.PREFIX, filename)
-        output = TemplateTester._run(self, filename)
+        output = TemplateTester._run(self, filename, nsDict)
         if (output.find("<") < 0): self.fail()
         if (output.find(">") < 0): self.fail()
         
     def test_commonuse(self):
-        self._run("object")
+        class Dummy:
+            _cubictemp_unescaped = 1
+            def __repr__(self):
+                return "<foo>"
+
+        mdict = {
+            "object":   Dummy()
+        }
+        self._run("object", mdict)
 
     def test_tag(self):
-        self._run("tag")
+        mdict = {
+            "tag":   "<foo>"
+        }
+        self._run("tag", mdict)
