@@ -1,27 +1,28 @@
+import string
 import pylid
 import cubictemp
 
 def dummyproc(s):
     return "::%s::"%s
 
+def dummyproc2(s):
+    return "**%s**"%s
+
 
 class uProcessor(pylid.TestCase):
     def test_procs(self):
-        p = cubictemp.Processor(dummyproc)
+        p = cubictemp.Processor() | dummyproc
         assert p("foo") == "::foo::"
 
     def test_procs_chain(self):
-        def dummyproc(s):
-            return "::%s::"%s
-        p1 = cubictemp.Processor(dummyproc)
-        def dummyproc2(s):
-            return "**%s**"%s
-        p2 = cubictemp.Processor(dummyproc2)
-
-        s = (p1 | p2)("foo")
+        p = cubictemp.Processor()
+        p = p | dummyproc | dummyproc2
+        s = p("foo")
         assert s == "**::foo::**"
 
-        s = (p2 | p1)("foo")
+        p = cubictemp.Processor()
+        p = p | dummyproc2 | dummyproc
+        s = p("foo")
         assert s == "::**foo**::"
 
 
@@ -198,30 +199,38 @@ class uTemp(pylid.TestCase):
 
     def test_simpleproc(self):
         s = """
-            <!--(block foo | dummyproc)-->one<!--(end)-->
+            <!--(block foo | strip | dummyproc)-->
+                one
+            <!--(end)-->
             @!foo!@
         """
-        t = cubictemp.Temp(s)
+        t = cubictemp.Temp(s, strip=string.strip)
         assert "::one::" in t(dummyproc=dummyproc)
 
     def test_inlineproc(self):
         s = """
-            <!--(block | dummyproc)-->one<!--(end)-->
+            <!--(block | strip | dummyproc)-->
+                one
+            <!--(end)-->
         """
-        t = cubictemp.Temp(s)
+        t = cubictemp.Temp(s, strip=string.strip)
         assert "::one::" in t(dummyproc=dummyproc)
 
     def test_namespace_err(self):
         s = """
             @!one!@
-            <!--(block one)-->one<!--(end)-->
+            <!--(block one)-->
+                one
+            <!--(end)-->
         """
         t = cubictemp.Temp(s)
         self.failWith("not defined", t)
 
     def test_namespace_follow(self):
         s = """
-            <!--(block one)-->one<!--(end)-->
+            <!--(block one)-->
+                one
+            <!--(end)-->
             @!one!@
         """
         t = cubictemp.Temp(s)
@@ -229,9 +238,13 @@ class uTemp(pylid.TestCase):
 
     def test_namespace_follow(self):
         s = """
-            <!--(block one)-->one<!--(end)-->
+            <!--(block one)-->
+                one
+            <!--(end)-->
             @!one!@
-            <!--(block one)-->two<!--(end)-->
+            <!--(block one)-->
+                two
+            <!--(end)-->
             @!one!@
         """
         t = str(cubictemp.Temp(s))
@@ -240,7 +253,9 @@ class uTemp(pylid.TestCase):
 
     def test_namespace_nest(self):
         s = """
-            <!--(block one)-->foo<!--(end)-->
+            <!--(block one)-->
+                foo
+            <!--(end)-->
             <!--(block one)-->
                 <!--(block two)-->
                     @!one!@
@@ -248,7 +263,9 @@ class uTemp(pylid.TestCase):
                 @!two!@
             <!--(end)-->
             @!one!@
-            <!--(block one)-->bar<!--(end)-->
+            <!--(block one)-->
+                bar
+            <!--(end)-->
             @!one!@
         """
         t = str(cubictemp.Temp(s))
@@ -257,11 +274,28 @@ class uTemp(pylid.TestCase):
 
     def test_blockspacing(self):
         s = """
-            <!--(block|dummyproc)-->one<!--(end)-->
+            <!--(block|strip|dummyproc)-->
+                one
+            <!--(end)-->
         """
-        t = cubictemp.Temp(s)
+        t = cubictemp.Temp(s, strip=string.strip)
         assert t(dummyproc=dummyproc).strip() == "::one::"
 
+    def test_processorchain(self):
+        s = """
+            <!--(block|strip|dummyproc|dummyproc2)-->
+                one
+            <!--(end)-->
+        """
+        t = cubictemp.Temp(s, strip=string.strip, dummyproc2=dummyproc2)
+        assert t(dummyproc=dummyproc).strip() == "**::one::**"
 
-
-
+    def test_lines(self):
+        s = """
+            :<!--(block foo)-->
+                one
+            :<!--(end)-->
+        """
+        t = cubictemp.Temp(s)
+        s = t()
+        assert ":<!" in s

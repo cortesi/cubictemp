@@ -46,20 +46,18 @@ def escape(s):
 
 
 class Processor:
-    def __init__(self, *func):
-        self.funcs = list(func)
+    def __init__(self):
+        self.funcs = []
 
     def __or__(self, other):
-        s = self.funcs[:]
-        s.extend(other.funcs)
-        return Processor(*s)
+        self.funcs.append(other)
+        return self
 
     def __call__(self, s):
         for i in self.funcs:
             s = i(s)
         return s
 
-escapeProcessor = Processor(escape)
 
 class _Text:
     def __init__(self, txt):
@@ -67,6 +65,9 @@ class _Text:
 
     def __call__(self, **ns):
         return self.txt
+
+    def __repr__(self):
+        return "Text(%s)"%repr(self.txt)
 
 
 class _Eval:
@@ -108,11 +109,14 @@ class _Block(list, _Eval):
         self.ns, self.processor = ns, processor
         self.pos, self.tmpl = pos, tmpl
         if processor:
-            self._ecache = self._compile(processor, pos, tmpl)
+            self._ecache = self._compile(
+                "_cubictemp_processor | " + processor, pos, tmpl
+            )
 
     def __call__(self, **ns):
         r = "".join([i(**ns) for i in self])
         if self.processor:
+            ns["_cubictemp_processor"] = Processor()
             proc = self._eval(self._ecache, ns)
             return proc(r)
         else:
@@ -144,14 +148,14 @@ class Temp:
     _cubictemp_unescaped = 1
     _bStart = r"""
         # Two kinds of tags: named blocks and for loops
-        (<!--\(\s*               
+        (^[ \t]*<!--\(\s*               
             (
                     for\s+(?P<varName>\w+)\s+in\s+(?P<iterable>.+)
-                |   block(\s+(?P<blockName>\w+))? \s* (\|\s*(?P<processor>\w+))?
+                |   block(\s+(?P<blockName>\w+))? \s* (\|\s*(?P<processor>.+))?
             )
-        \s*\)(-->)?) | 
+        \s*\)(-->)?\s*$) | 
         # The end of a tag
-        (?P<end>(<!--)?\(\s*end\s*\)-->) |
+        (?P<end>^[ \t]*(<!--)?\(\s*end\s*\)-->\s*$) |
         # An expression
         ((?P<flavor>@|\$)!(?P<expr>.+?)!(?P=flavor))
     """
