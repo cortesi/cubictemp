@@ -153,9 +153,9 @@ class Temp:
                     for\s+(?P<varName>\w+)\s+in\s+(?P<iterable>.+)
                 |   block(\s+(?P<blockName>\w+))? \s* (\|\s*(?P<processor>.+))?
             )
-        \s*\)(-->)?\s*$) | 
+        \s*\)(-->)?\s*?\n) | 
         # The end of a tag
-        (?P<end>^[ \t]*(<!--)?\(\s*end\s*\)-->\s*$) |
+        (?P<end>^[ \t]*(<!--)?\(\s*end\s*\)-->\s*\n) |
         # An expression
         ((?P<flavor>@|\$)!(?P<expr>.+?)!(?P=flavor))
     """

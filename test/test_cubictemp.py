@@ -165,10 +165,10 @@ class uTemp(pylid.TestCase):
 
         assert c.ns["foo"]
         nest = c.ns["foo"].ns["foo"]
-        assert len(nest) == 3
+        assert len(nest) == 1
 
-        assert nest[1].iterable == "[1, 2, 3]"
-        assert nest[1][1].expr == "tag"
+        assert nest[0].iterable == "[1, 2, 3]"
+        assert nest[0][1].expr == "tag"
 
     def test_str(self):
         s = str(cubictemp.Temp("foo"))

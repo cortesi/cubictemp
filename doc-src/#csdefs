@@ -10,12 +10,12 @@ sidebar = "$!siblingIndex('/index.html', exclude=['countershape'])!$"
 index.html          "Introduction"
 start.html          "Getting Started"
 templates.html      "Templates"
-subs.html           "Substitutions"
+subs.html           "Substitution Tags"
 subs
 blocks.html         "Blocks"
 blocks
 conds.html          "Conditionals"
 cheat.html          "Cheat Sheet"
-#python(../cubictemp/cubictemp.py)
+python("../cubictemp.py") "Source"
 admin.html          "Administrivia"
 

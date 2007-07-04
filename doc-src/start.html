@@ -1,47 +1,34 @@
 
-<p> This section gives a quick overview of Cubictemp, centered around a very
-simple example. </p>
+<h1> Hello walrus: a quick tour of Cubictemp</h1>
 
-
-<h2> Hello walrus: A Basic Substitution Example </h2>
+<h2> Basic Substitution </h2>
 
 <p> The simplest function of a templating system is basic substitution - that
 is, taking one piece of text, and inserting it into another. Consider the
-following line:</p>
+following code snippet: </p>
 
-<code class="template">
-<!--(block | cubescript)-->
-Hello @_!foo!@.
-<!--(end)-->
-</code>
-
-<p>This line is a complete Cubictemp template. It contains the single
-substitution tag - 
-
-<code class="template">
-<!--(block | cubescript)-->
-@_!foo!@
-<!--(end)-->
-</code>
-
-- which we can use to insert the word "walrus" at the appropriate spot like
-this: </p>
-
-<!--(block | cubescript)-->
+<!--(block | cubescript | pySyntax)-->
 import cubictemp
 
-template = "Hello @ !foo!@."
-temp = cubictemp.Temp(template, foo="walrus")
-print temp
+template = "Hello @_!foo!@."
+temp = cubictemp.Temp(template)
+print temp(foo="walrus")
 <!--(end)-->
-@ !colourPython(code)!@
 
-<p>When we run the snippet of code above, the following output is
-produced:</p>
+<p> This is a complete Cubictemp example - it constructs a template, with a
+single substitution tag called "foo". It then calls the template, passing in a
+namespace within which the template is evaluated. The output of this program
+is: </p>
 
-<code class="output">
+<pre>
 Hello walrus.
-</code>
+</pre>
 
-<p>That's it - the example above is perhaps the simplest possible Cubictemp
-example. </p>
+<p>That's it - perhaps the simplest possible Cubictemp example. </p>
+
+
+<h2> Blocks </h2>
+
+
+
+<h2> Sequences </h2>

@@ -3,35 +3,14 @@
 
 <p> The Temp class is instantiated as follows: </p>
 
-<!--(block|pysyntax)-->
+<!--(block|pySyntax)-->
 Temp(template, **kwargs)
 <!--(end)-->
 
-<p> Here, "template" is the complete text of a template (as returned, for
-instance, by file.read()). Following "template", there is a set of keyword
-arguments, where the left-hand-side indicates a variable name, and the
-right-hand-side a value.  Keyword arguments can either be passed explicitly,
-like so: </p>
+<p> ... where "template" is the complete text of a template and kwargs is a set
+of name/value pairs that make up the initial namespace of the template. Temp
+objects are rendered when they are called - 
 
-<!--(block|pysyntax)-->
-temp = Temp(template, one=1, two=2)
-print temp
-<!--(end)-->
-
-<p> ... or one could choose to construct an argument dictionary first:</p>
-
-<!--(block|pysyntax)-->
-mydict = {
-			"one": 1,
-			"two": 2
-		}
-temp = Temp(template, **mydict)
-print temp
-<!--(end)-->
-
-<p> In the rest of this manual, we will frequently refer to these keyword
-arguments as the "namespace" of a template. The reason for this terminology
-will become clear in the following sections.</p>
 
 <p> The Temp object is rendered whenever its __repr__() method is called -
 i.e. whenever the template needs to be converted to a string. In the example
@@ -43,7 +22,7 @@ is re-rendered every time this happens.<p>
 
 <p> A Temp object can also be rendered by calling it like a function: </p>
 
-<!--(block | pysyntax )-->
+<!--(block | pySyntax )-->
 temp = Temp(template, one=1, two=2)
 print temp(one=3, two=4)
 <!--(end)-->
@@ -58,7 +37,7 @@ passed during the object's instantiation.</p>
 Temp class to ease a common usage scenario: loading a template from a file. The
 File class is instantiated as follows:</p>
 
-<!--(block | pysyntax)-->
+<!--(block | pySyntax)-->
 File(path, **kwargs)
 <!--(end)-->
 
