@@ -2,6 +2,7 @@
 import cgi, re, itertools
 context = 2
 
+
 class TempException(Exception):
     def __init__(self, val, pos, tmpl):
         Exception.__init__(self, val)
@@ -43,6 +44,22 @@ def escape(s):
     s = s.replace("'", "&#39;")
     return s
 
+
+class Processor:
+    def __init__(self, *func):
+        self.funcs = list(func)
+
+    def __or__(self, other):
+        s = self.funcs[:]
+        s.extend(other.funcs)
+        return Processor(*s)
+
+    def __call__(self, s):
+        for i in self.funcs:
+            s = i(s)
+        return s
+
+escapeProcessor = Processor(escape)
 
 class _Text:
     def __init__(self, txt):

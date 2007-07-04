@@ -5,6 +5,26 @@ def dummyproc(s):
     return "::%s::"%s
 
 
+class uProcessor(pylid.TestCase):
+    def test_procs(self):
+        p = cubictemp.Processor(dummyproc)
+        assert p("foo") == "::foo::"
+
+    def test_procs_chain(self):
+        def dummyproc(s):
+            return "::%s::"%s
+        p1 = cubictemp.Processor(dummyproc)
+        def dummyproc2(s):
+            return "**%s**"%s
+        p2 = cubictemp.Processor(dummyproc2)
+
+        s = (p1 | p2)("foo")
+        assert s == "**::foo::**"
+
+        s = (p2 | p1)("foo")
+        assert s == "::**foo**::"
+
+
 class uTempException(pylid.TestCase):
     def setUp(self):
         self.s = cubictemp.Temp("text")
@@ -241,6 +261,7 @@ class uTemp(pylid.TestCase):
         """
         t = cubictemp.Temp(s)
         assert t(dummyproc=dummyproc).strip() == "::one::"
+
 
 
 
