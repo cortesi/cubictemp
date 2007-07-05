@@ -10,7 +10,7 @@ class TempException(Exception):
         self.lineNo, self.context = self._getLines(tmpl.txt, pos, context)
 
     def _getLines(self, txt, pos, context):
-        lines = txt.splitlines(True)
+        lines = txt.splitlines()
         cur = 0
         for i, l in enumerate(lines):
             cur += len(l)
@@ -28,7 +28,7 @@ class TempException(Exception):
             "TempException: %s"%self.val,
             "\tContext: line %s in %s:"%(self.lineNo, self.tmpl.name),
         ]
-        ret.append("".join(self.context))
+        ret.append("\n".join(self.context))
         return "\n".join(ret)
 
 
@@ -65,9 +65,6 @@ class _Text:
 
     def __call__(self, **ns):
         return self.txt
-
-    def __repr__(self):
-        return "Text(%s)"%repr(self.txt)
 
 
 class _Eval:
