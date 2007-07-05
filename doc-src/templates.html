@@ -1,5 +1,5 @@
 
-<h2>The Temp Class</h2>
+<h1>The Temp Class</h1>
 
 <p> The Temp class is instantiated as follows: </p>
 
@@ -7,40 +7,86 @@
 Temp(template, **kwargs)
 <!--(end)-->
 
-<p> ... where "template" is the complete text of a template and kwargs is a set
-of name/value pairs that make up the initial namespace of the template. Temp
-objects are rendered when they are called - 
+<p> Here <b>template</b> is the complete text of a template and <b>kwargs</b>
+is a set of name/value pairs that make up the initial namespace of the
+template. This initial namespace can be over-ridden by calling the template
+after instantiation. So this script: </p>
 
-
-<p> The Temp object is rendered whenever its __repr__() method is called -
-i.e. whenever the template needs to be converted to a string. In the example
-above, this happens invisibly in the line <code>print temp</code>, but it can
-be done more explicitly through <code>repr(temp)</code> or just plain
-<code>`temp`</code>, which will both return the rendered string. The template
-is re-rendered every time this happens.<p>
-
-
-<p> A Temp object can also be rendered by calling it like a function: </p>
-
-<!--(block | pySyntax )-->
-temp = Temp(template, one=1, two=2)
-print temp(one=3, two=4)
+<!--(block|cubescript|pySyntax)-->
+template = "@_!one!@ @_!two!@."
+temp = cubictemp.Temp(template, one="Hello", two="bar")
+print temp(two="walrus")
 <!--(end)-->
 
-<p> The keyword arguments passed to the call "over-ride" the keyword arguments
-passed during the object's instantiation.</p>
+Will print:
+
+<pre>
+Hello walrus.
+</pre>
+
+<p> Temp objects can also be rendered by just "string-ifying" them, say through
+a <b>print</b> statement, or a call to the built-in <b>str</b>. </p>
 
 
-<h2>The File Class</h2>
+<!--(block|cubescript|pySyntax)-->
+template = "Hello @_!foo!@."
+temp = cubictemp.Temp(template, foo="bar")
+s = str(temp)
+print s
+print temp
+<!--(end)-->
 
-<p> Cubictemp also contains a small helper class named "File". It wraps the
-Temp class to ease a common usage scenario: loading a template from a file. The
-File class is instantiated as follows:</p>
+Will print:
+
+<pre>
+Hello bar.
+Hello bar.
+</pre>
+
+
+<p> <b>Temp</b> objects have a special attribute <b>name</b> that is used to
+identify templates in error exceptions.You can set the template name manually
+as follows:</p>
+
+<!--(block|cubescript|pySyntax)-->
+template = "@_!nonexistent!@."
+temp = cubictemp.Temp(template)
+temp.name = "MyName"
+str(temp)
+<!--(end)-->
+
+<p>This will produce the following traceback:</p>
+
+<!--(block|cubescript|pySyntax)-->
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/usr/lib/python2.5/site-packages/cubictemp.py", line 202, in __str__
+    return self()
+  File "/usr/lib/python2.5/site-packages/cubictemp.py", line 207, in __call__
+    return self.block(**ns)
+  File "/usr/lib/python2.5/site-packages/cubictemp.py", line 114, in __call__
+    r = "".join([i(**ns) for i in self])
+  File "/usr/lib/python2.5/site-packages/cubictemp.py", line 95, in __call__
+    ret = self._eval(self._ecache, ns)
+  File "/usr/lib/python2.5/site-packages/cubictemp.py", line 83, in _eval
+    raise TempException(s, self.pos, self.tmpl)
+cubictemp.TempException: TempException: NameError: "name 'nonexistent' is not defined"
+    Context: line 1 in MyName:
+        @_!nonexistent!@
+        ^^^^^^^^^^^^^^^^
+<!--(end)-->
+
+
+<h1>The File Class</h1>
+
+<p> Cubictemp also has a convenience class named "File". It extends the Temp
+class to ease a common usage scenario: loading a template from a file. The File
+class is instantiated as follows:</p>
 
 <!--(block | pySyntax)-->
 File(path, **kwargs)
 <!--(end)-->
 
-<p> The "path" argument is the full path to a Cubictemp template. The File
-class also makes reading exceptions a bit more convenient by pre-pending the
-template file path to error messages. </p>
+<p> The "path" argument is the full path to a Cubictemp template. The name of
+the template is set to the provided path automatically.</p>
+

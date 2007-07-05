@@ -60,10 +60,6 @@ class uTempException(pylid.TestCase):
         """
         self.failWith("line 5", cubictemp.Temp, s)
 
-    def test_format_oneline(self):
-        t = cubictemp.Temp("@!foo!@")
-        str(t)
-
 
 class u_Expression(pylid.TestCase):
     def setUp(self):
