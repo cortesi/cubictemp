@@ -1,81 +1,90 @@
 
-<h2> Introduction to Substitutions </h2>
+<h1> Tags and Expressions </h1>
 
-<p> From the examples in the previous section, it may seem that text between the 
+<p> Cubictemp evaluates everything between the substitution delimiters 
 
 <!--(block|cubescript)-->
-<code class="template">@_!...!@</code> 
+- @_!...!@ and $_!...!$ -
 <!--(end)-->
 
-delimiters is treated simply as an identifier to be replaced. This is not the
-case - Cubictemp actually evaluates everything between the delimiters as an
-expression in the namespace specified by the keyword arguments. It is the
-result of this evaluation that is converted to a string with the built-in
-function <code>repr</code>, and placed in the template. This means that
-<i>any</i> valid Python expression which can be evaluated in the indicated
-namespace can appear in a substitution tag.</p>
+as expressions in the specified namespace. The result of this evaluation is
+converted to a string with the built-in function <b>str</b>, and placed in the
+template at the appropriate place. <i>Any</i> valid Python expression can
+appear in a substitution tag.</p> 
+
+<p> At this point it is important to distinguish clearly between Python
+expressions and Python statements. Python <b>expressions</b> can conveniently
+be thought of as anything that can be on the right-hand-side of an equals sign.
+Arithmetic operators, boolen operators, parentheses for grouping,
+method/function calls, object instantiation and conditional expressions are all
+valid components of expressions. Python <b>statements</b>, on the other hand,
+include things like <b>while</b>, <b>print</b>, variable assignment and full
+<b>if</b> blocks. CubicTemp allows <i>only expressions</i> in places where it
+evaluates Python code. This is a deliberate choice - limiting templates to
+expressions ensures that program logic lives in the Python program files where
+they belong. This enforces a hard separation between code and presentation,
+making it easier to unit-test, change and maintain the application as a
+whole.</p>
 
 <p>To illustrate this, take a look at the template below:</p>
 
-<code class="template">
+<pre>
 <!--(block|cubescript)-->
-	@_!foo!@ times two is @_!foo*2!@<br>
-	@_!foo!@ squared is @_!foo*foo!@<br>
+@_!foo!@ times two is @_!foo*2!@
+@_!foo!@ squared is @_!foo*foo!@
 <!--(end)-->
-</code>
+</pre>
 
 <p> ...and this accompanying code snippet: </p>
 
-
 <!--(block|pySyntax)-->
 import cubictemp
-
 temp = cubictemp.File("template", foo=3)
 print temp
 <!--(end)-->
 
 <p> The output here would look like this:</p>
 
+<pre>
+3 times two is 6
+3 squared is 9
+</pre>
 
-<code class="output">
-	3 times two is 6<br>
-	3 squared is 9<br>
-</code>
+<p> Similarly, if <b>foo</b> happened to be a dictionary, we could extract a
+value from it inside a template like this:</p>
 
-<p> Similarly, if <code>"foo"</code> happened to be a dictionary, we could extract
-a value from it inside a template like this:</p>
+<pre>
+<!--(block|cubescript)-->
+@_!foo["bar"]!@ 
+<!--(end)-->
+</pre>
 
-<code class="template">
-	<!--(block|cubescript)-->
-		@_!foo["bar"]!@ 
-	<!--(end)-->
-</code>
+<p> And if <b>"foo"</b> was an object with an attribute <b>"x"</b>, we could
+reference the attribute by saying:</p>
 
-<p> And if <code>"foo"</code> was an object with an attribute <code>"x"</code>,
-we could reference the attribute by saying:</p>
-
-<code class="template">
-	<!--(block|cubescript)-->
-		@_!foo.x!@ 
-	<!--(end)-->
-</code>
+<pre>
+<!--(block|cubescript)-->
+@_!foo.x!@ 
+<!--(end)-->
+</pre>
 
 <p> This ability to evaluate expressions makes Cubictemp templates very
-powerful and expressive. </p>
-
-<h2> A word about expressions and statements</h2>
-
-<p> At this point it is important to distinguish between Python expressions and
-Python statements. Python <b>expressions</b> can conveniently be thought of as
-anything that can be on the right-hand-side of an equals sign. Arithmetic
-operators, boolen operators, parentheses for grouping, method/function calls,
-object instantiation and conditional expressions are all valid components of
-expressions. Python <b>statements</b>, on the other hand, include things like
-"while", "print", variable assignment and full "if" blocks. CubicTemp allows
-<i>only expressions</i> in places where it evaluates Python code. This is a
-deliberate choice - limiting templates to expressions ensures that program
-logic lives in the Python program files where they belong. This enforces a hard
-separation between code and presentation, making it easier to unit-test, change
-and maintain the application as a whole.</p>
+expressive. </p>
 
 
+<h2> A special case: conditionals </h2>
+
+<p> Python's conditional expressions are especially handy in templates.
+Evaluating this template:</p>
+
+<pre>
+<!--(block|cubescript)-->
+@_!"foo" if 1=2 else "bar"!@
+<!--(end)-->
+</pre>
+
+<p>... will result in: </p>
+
+<pre>
+bar
+</pre>

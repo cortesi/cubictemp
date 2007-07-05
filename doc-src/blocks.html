@@ -1,13 +1,10 @@
 
 <p> Much of the power and utility of Cubictemp templates lie in the use of
-block constructs.  A block is exactly what it sounds like - a chunk of text,
+block constructs. A block is exactly what it sounds like - a chunk of text,
 that may contain newlines, and that is acted on in some way by the template.
-There are 3 types of block in Cubictemp:</p>
+Cubictemp understands two block types:</p>
 
 <ul>
-
-    <li> <a href="blocks/raw.html">Raw blocks</a> blocks mark sections
-    of text that Cubictemp should not process.</li>
 
     <li> <a href="blocks/named.html">Named blocks</a> provide a way of
     "naming" a piece of text, and then performing some manipulation on it.
@@ -18,24 +15,18 @@ There are 3 types of block in Cubictemp:</p>
 
 </ul>
 
-<p> Each of these will be discussed in turn in the following sections.</p>
+<p> Both block types have the same basic syntax: </p> 
 
-
-<h2> Block Syntax </h2>
-
-
-<p> Cubictemp blocks all have the same basic syntax: </p> 
-
-<!--(block|cubescript)-->
-    <!--(<_block definition>)-->
-        text
-    <!--(_end)-->
+<!--(block|cubescript|htmlSyntax)-->
+<!--(<block definition>)-->
+    text
+<!--(_end)-->
 <!--(end)-->
 
 <p> ... where ("<block definition>") varies between block types. Blocks can be
 nested as deeply as you wish. </p>
 
-<h2> Closed and half-open Block Tags</h2>
+<h2> Playing nice with your designers: closed and half-open block tags</h2>
 
 <p> Before we go on to discuss the use and properties of the different block
 types, take a moment to look at the block syntax above. Notice that the start
@@ -46,20 +37,20 @@ circumstances, but it might not always be what we want. In fact, CubicTemp
 block directives have two different "flavours". The first, in which the
 directives are comments, but content is visible, you have already met: </p>
 
-<!--(block|cubescript)-->
-    <!--(_block foo)-->
-        @_!bar!@
-    <!--(_end)-->
+<!--(block|cubescript|htmlSyntax)-->
+<!--(_block foo)-->
+    @_!bar!@
+<!--(_end)-->
 <!--(end)-->
 
 <p> Sometimes, however, we would prefer to have the entire block appear as a
 comment. The second block "flavour" allows us to write blocks that are HTML
 comments in their entirety.</p>
 
-<!--(block|cubescript)-->
-    <!--(_block foo)
-        @_!bar!@
-    (_end)-->
+<!--(block|cubescript|htmlSyntax)-->
+<!--(_block foo)
+    @_!bar!@
+(_end)-->
 <!--(end)-->
 
 <p> There is <b>no</b> functional difference whatsoever between the two

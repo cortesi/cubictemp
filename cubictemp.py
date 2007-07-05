@@ -2,7 +2,6 @@
 import cgi, re, itertools
 context = 2
 
-
 class TempException(Exception):
     def __init__(self, val, pos, tmpl):
         Exception.__init__(self, val)

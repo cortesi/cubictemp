@@ -1,58 +1,101 @@
 
-<p> Now, we can finally give a fairly formal definition of Cubictemp's
-escaping mechanism. The syntax
+<h1> Escaped substitution </h1>
 
+<p> As already hinted in the previous section, Cubictemp understands two basic
+flavours of substitution. Tags of the following form are are <b>escaped</b>
+substitutions:</p>
+
+<pre>
 <!--(block|cubescript)-->
-<code class="template">@_!...!@</code> 
+@_!...!@
+<!--(end)-->
+</pre>
+
+<p> Escaping at the template level provides effective protection against
+@!aLink(next, "XSS vulnerabilities")!@, so this tag form should be used by
+preference unless there is a real need for unescaped substitution. Escaped
+substitutions are escaped <b>unless</b> the expression in the substitution tag
+evaluates to an object on which the special attribute "_cubictemp_unescaped"
+exists and evaluates to true.  Cubictemp blocks 
+
+(@!aLink("blocks.html", "discussed in the next chapter")!@)
+
+have a special attribute "_cubictemp_unescaped" which evaluates to true. The
+process of escaping simply involves converting the following characters to
+their corresponding HTML escape sequences: &amp;, &lt;, &gt;, &quot;, &#146;.
+The &quot; (quote) character is included because it can be used to break out of
+an HTML attribute value string. The &#146; (singe quote) character is included
+because programmers often have to substitute text into Javascript strings when
+creating dynamic web-pages. A single-quote character can be used to break out
+of a Javascript string, and inject malicious code. </p>
+
+<p> Lets consider some concrete examples. </p>
+
+<!--(block|cubescript|pySyntax)-->
+import cubictemp
+x = "<H1>foo</H1>"
+t = cubictemp.Temp("@_!x!@", x = x)
+print t
 <!--(end)-->
 
-denotes an <b>escaped</b> substitution:
+Prints:
 
-	<ul>
+<!--(block|htmlSyntax)-->
+&lt;H1&gt;foo&lt;/H1&gt;
+<!--(end)-->
 
-		<li> Escaped substitutions are always escaped...
+Whereas:
 
-		<li> ... <b>except</b> if the expression in the substitution tag
-		evaluates to an object on which the special attribute
-		"_cubictemp_unescaped" evaluates to true. 
 
-		<li> Cubictemp blocks (discussed in the next chapter) have a special
-		attribute "_cubictemp_unescaped" which evaluates to true.
+<!--(block|cubescript|pySyntax)-->
+import cubictemp
 
-	</ul>
+class X:
+    _cubictemp_unescaped = True
+    def __str__(self):
+        return "<H1>foo</H1>"
 
+t = cubictemp.Temp("@_!x!@", x = X())
+print t
+<!--(end)-->
+
+Prints:
+
+<!--(block|htmlSyntax)-->
+<H1>foo</H1>
+<!--(end)-->
+
+
+<h1> Unescaped Substitution </h1>
 
 <p> The syntax
 
+<pre>
 <!--(block|cubescript)-->
-<code class="template">$_!...!$</code> 
+$_!...!$
 <!--(end)-->
+</pre>
 
 denotes an <b>un-escaped</b> substitution. Expressions using this substitution
-syntax are <b>never</b> escaped.</p>
+syntax are <b>never</b> escaped. Concretely, this means that the following
+program:</p>
 
-<p> The process of escaping simply involves converting the following characters
-to their corresponding HTML escape sequences: </p>
+<!--(block|cubescript|pySyntax)-->
+import cubictemp
+x = "<H1>foo</H1>"
+t = cubictemp.Temp("$_!x!$", x = x)
+print t
+<!--(end)-->
 
-	<ul>
+... will print:
 
-		<li> &amp;
-		<li> &lt;
-		<li> &gt;
-		<li> &quot;
-		<li> &#146;
+<!--(block|htmlSyntax)-->
+<H1>foo</H1>
+<!--(end)-->
 
-	</ul>
 
-<p> The reason for the presence of the &quot; and &#146; characters in the list
-above may not be obvious at first sight. The &quot; character is included
-because it can be used to break out of an HTML attribute value string. The
-&#146; character is included because programmers often have to substitute text
-into Javascript strings when creating dynamic web-pages. A single-quote
-character can be used to break out of a Javascript string, and inject malicious
-code. </p>
 
-<h2> A simple rule of thumb </h2>
+<h1> A simple rule of thumb </h1>
 
 <p> What all this amounts to is a simple rule of thumb for avoiding XSS
 problems - always use the <b>escaped</b> substitution syntax if you can. On

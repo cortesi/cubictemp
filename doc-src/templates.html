@@ -1,7 +1,8 @@
 
 <h1>The Temp Class</h1>
 
-<p> The Temp class is instantiated as follows: </p>
+<p> The @!aLink("cubictemp.py.html", "Temp", "Temp")!@ class is instantiated as
+follows: </p>
 
 <!--(block|pySyntax)-->
 Temp(template, **kwargs)
@@ -76,12 +77,15 @@ cubictemp.TempException: TempException: NameError: "name 'nonexistent' is not de
         ^^^^^^^^^^^^^^^^
 <!--(end)-->
 
+<p> By default, the <b>name</b> attribute is set to "&lt;string&gt;". </p>
+
 
 <h1>The File Class</h1>
 
-<p> Cubictemp also has a convenience class named "File". It extends the Temp
-class to ease a common usage scenario: loading a template from a file. The File
-class is instantiated as follows:</p>
+<p> Cubictemp also has a convenience class named
+@!aLink("cubictemp.py.html","File","File")!@. It extends the Temp class to ease
+a common usage scenario: loading a template from a file. The File class is
+instantiated as follows:</p>
 
 <!--(block | pySyntax)-->
 File(path, **kwargs)
