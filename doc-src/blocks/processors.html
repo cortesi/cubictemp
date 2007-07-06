@@ -1,0 +1,29 @@
+
+<h1> Using processors </h1>
+
+<p> There is a powerful extension to the named block syntax that deserves a
+section of its own. </p>
+
+
+<h1> A pertinent example </h1>
+
+<p> Block processors are incredibly useful. This document, for instance, is
+written and maintained with a document rendering system that uses CubicTemp
+templates. Have a look at the Python code examples in this manual. Writing and
+maintaining syntax highlighted Python code by hand would be well neigh
+impossible (view the source for this page to see what's involved). Instead, we
+have written a Python wrapper object, that takes a block normal Python code as
+input, and produces properly indented and highlighted HTML when the "__repr__"
+method is called.  Named blocks now make it easy to integrate the snippets of
+example code, and the rules for presenting them. Here is the the section of the
+template that produced the code sample above: </p>
+
+<p> The code above simply places the class "ColourPython" (too long to show
+here in full) in the namespace that gets passed to the template instance. The
+class is now available for instantiation within our template. The template then
+simply passes the output of a named block to the class, and the resulting
+string is displayed. Note the presence of the "_cubictemp_unescaped" attribute
+in the ColourPython class. This makes sure that our object can use special HTML
+characters in its expansion, without interference from the escaping
+mechanism.</p>
+
