@@ -9,8 +9,7 @@
 
 as expressions in the specified namespace. The result of this evaluation is
 converted to a string with the built-in function <b>str</b>, and placed in the
-template at the appropriate place. <i>Any</i> valid Python expression can
-appear in a substitution tag.</p> 
+template at the appropriate place.</p> 
 
 <p> At this point it is important to distinguish clearly between Python
 expressions and Python statements. Python <b>expressions</b> can conveniently
@@ -74,12 +73,13 @@ expressive. </p>
 
 <h2> A special case: conditionals </h2>
 
-<p> Python's conditional expressions are especially handy in templates.
-Evaluating this template:</p>
+<p> Python's conditional expressions are especially handy in templates. Since
+this expression type is relatively rarely used, we provide an example of its
+use in a tag expression. Evaluating this template:</p>
 
 <pre>
 <!--(block|cubescript)-->
-@_!"foo" if 1=2 else "bar"!@
+@_!"foo" if (1==2) else "bar"!@
 <!--(end)-->
 </pre>
 

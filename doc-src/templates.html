@@ -1,8 +1,7 @@
 
-<h1>The Temp Class</h1>
+<h1>The @!aLink("cubictemp.py.html", "Temp", "Temp")!@ Class</h1>
 
-<p> The @!aLink("cubictemp.py.html", "Temp", "Temp")!@ class is instantiated as
-follows: </p>
+<p> The <b>Temp</b> class is instantiated as follows: </p>
 
 <!--(block|pySyntax)-->
 Temp(template, **kwargs)
@@ -79,13 +78,14 @@ cubictemp.TempException: TempException: NameError: "name 'nonexistent' is not de
 
 <p> By default, the <b>name</b> attribute is set to "&lt;string&gt;". </p>
 
+<p> <b>Temp</b> and <b>File</b> both have a _cubictemp_unescaped attribute set
+to True. This means that neither of these object types will be escaped in
+Cubictemp @!aLink("subs/definition.html", "escaped tags")!@. </p>
 
-<h1>The File Class</h1>
+<h1>The @!aLink("cubictemp.py.html","File","File")!@ Class</h1>
 
-<p> Cubictemp also has a convenience class named
-@!aLink("cubictemp.py.html","File","File")!@. It extends the Temp class to ease
-a common usage scenario: loading a template from a file. The File class is
-instantiated as follows:</p>
+<p> This convenience class extends Temp to ease a common usage scenario:
+loading a template from a file. The File class is instantiated as follows:</p>
 
 <!--(block | pySyntax)-->
 File(path, **kwargs)
@@ -93,4 +93,15 @@ File(path, **kwargs)
 
 <p> The "path" argument is the full path to a Cubictemp template. The name of
 the template is set to the provided path automatically.</p>
+
+<h1> Speed </h1>
+
+<p> Cubictemp does as much work as it can at template instantiation. The
+template is parsed, blocks are readied for execution, and all expressions are
+pre-compiled. This means that Cubictemp is very, very fast when used in
+long-running applications like FastCGI applications, where templates can be
+initialised once up-front and then re-used. A nice by-product of this mode of
+operation is that syntax errors are caught during the pre-compilation process,
+as soon as templates are instantiated. </p>
+
 

@@ -9,7 +9,7 @@ class TempException(Exception):
         self.lineNo, self.context = self._getLines(tmpl.txt, pos, context)
 
     def _getLines(self, txt, pos, context):
-        lines = txt.splitlines()
+        lines = txt.splitlines(True)
         cur = 0
         for i, l in enumerate(lines):
             cur += len(l)
@@ -17,9 +17,9 @@ class TempException(Exception):
                 break
         startc = 0 if i < context else i - context
         endc = len(lines) if i+context > len(lines) else i + context + 1
-        marker = "%s\n"%("^"*len(l))
+        marker = "%s\n"%("^"*len(lines[i]))
         context = lines[startc:i+1] + [marker] + lines[i+1:endc]
-        context = ["\t\t" + l for l in context]
+        context = ["\t\t" + l.strip() for l in context]
         return i + 1, context
 
     def __str__(self):

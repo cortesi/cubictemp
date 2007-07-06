@@ -6,54 +6,10 @@ Cubictemp understands two block types:</p>
 
 <ul>
 
-    <li> <a href="blocks/named.html">Named blocks</a> provide a way of
-    "naming" a piece of text, and then performing some manipulation on it.
-    </li>
+    <li> @!aLink("named.html", "Named blocks")!@ provide a way of "naming" a
+    piece of text, and then performing some manipulation on it.</li>
 
-    <li> <a href="blocks/repeat.html">Repeat blocks</a> allow the
-    insertion of sequences of data. </li>
+    <li> @!aLink("repeat.html", "Repeat blocks")!@ allow the insertion of
+    sequences of data. </li>
 
 </ul>
-
-<p> Both block types have the same basic syntax: </p> 
-
-<!--(block|cubescript|htmlSyntax)-->
-<!--(<block definition>)-->
-    text
-<!--(_end)-->
-<!--(end)-->
-
-<p> ... where ("<block definition>") varies between block types. Blocks can be
-nested as deeply as you wish. </p>
-
-<h2> Playing nice with your designers: closed and half-open block tags</h2>
-
-<p> Before we go on to discuss the use and properties of the different block
-types, take a moment to look at the block syntax above. Notice that the start
-and end directives of the block are crafted to look like HTML comments.  This
-means that when you view your unrendered template in a browser, these
-directives are invisible, but the contents are viewable. This is handy in some
-circumstances, but it might not always be what we want. In fact, CubicTemp
-block directives have two different "flavours". The first, in which the
-directives are comments, but content is visible, you have already met: </p>
-
-<!--(block|cubescript|htmlSyntax)-->
-<!--(_block foo)-->
-    @_!bar!@
-<!--(_end)-->
-<!--(end)-->
-
-<p> Sometimes, however, we would prefer to have the entire block appear as a
-comment. The second block "flavour" allows us to write blocks that are HTML
-comments in their entirety.</p>
-
-<!--(block|cubescript|htmlSyntax)-->
-<!--(_block foo)
-    @_!bar!@
-(_end)-->
-<!--(end)-->
-
-<p> There is <b>no</b> functional difference whatsoever between the two
-flavours. The two flavours simply allow us to craft templates that can easily
-be viewed in a web-browser, without being rendered first.  We will work through
-examples of this in the discussion of repeat blocks and named blocks.</p>

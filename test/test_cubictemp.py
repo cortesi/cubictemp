@@ -54,7 +54,7 @@ class uTempException(pylid.TestCase):
                 @!foo!@
             <!--(end)-->
             @![!@
-            <!--(block bar)-->
+            <!--(block barbar)-->
                 @!foo!@
             <!--(end)-->
         """

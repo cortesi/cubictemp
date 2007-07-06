@@ -1,70 +1,32 @@
 
+<h1> Playing nice with your designers: closed and open tags</h1>
 
-Before we go on to discuss the use and properties of the other two types of
-block, take a moment to look at the block definitions above. Notice that the
-start and end directives of the block are crafted to look like HTML comments.
-This means that when you view your template in a browser, these directives are
-invisible, but the contents are viewable. This is handy in some circumstances,
-but it might not always be what we want. In fact, CubicTemp block directives
-have three different "flavours". The first, in which the directives are
-comments, but content is visible, you have already met:<br>
-<br>
+<p> Before we go on to discuss the use and properties of the different block
+types, take a moment to look at the block syntax above. Notice that the start
+and end directives of the block are crafted to look like HTML comments.  This
+means that when you view your unrendered template in a browser, these
+directives are invisible, but the contents are viewable. This is handy in some
+circumstances, but it might not always be what we want. In fact, CubicTemp
+block directives have two different "flavours". The first, in which the
+directives are comments, but content is visible, you have already met: </p>
 
-<!--(block foo)-->
-	<!--(raw)-->
-<!--(raw)-->
-	@!bar!@
+<!--(block|cubescript|htmlSyntax)-->
+<!--(_block foo)-->
+    @_!bar!@
+<!--(_end)-->
 <!--(end)-->
-	<!--(end)-->
-<!--(end)-->
-<code class="template">
-	@!escape(repr(foo))!@<br>
-</code>
-<br>
 
-Sometimes, however, we would prefer to have the entire block appear as a
+<p> Sometimes, however, we would prefer to have the entire block appear as a
 comment. The second block "flavour" allows us to write blocks that are HTML
-comments in their entirety.<br>
-<br>
+comments in their entirety.</p>
 
-<!--(block foo)-->
-	<!--(raw)-->
-<!--(raw)
-	@!bar!@
-(end)-->
-	<!--(end)-->
+<!--(block|cubescript|htmlSyntax)-->
+<!--(_block foo)
+    @_!bar!@
+(_end)-->
 <!--(end)-->
-<code class="template">
-	@!escape(repr(foo))!@<br>
-</code>
-<br>
 
-In the third flavour, the entire block is uncommented. It also serves as a
-nice shorthand, and is the preferred way of writing non-HTML templates. <br>
-<br>
-
-<!--(block foo)-->
-	<!--(raw)-->
-<(raw)
-	@!bar!@
-(end)>
-	<!--(end)-->
-<!--(end)-->
-<code class="template">
-	@!escape(repr(foo))!@<br>
-</code>
-<br>
-
-There is <b>no</b> functional difference whatsoever between these three. They
-are completely interchangeable - in fact, you can even use one type of start
-definition and a different type of end definition in the same block (although
-it is hard to imagine a reason to do this). The usefulness of the block
-definition types will become clear in the discussion of repeat blocks and named
-blocks.<p>
-
-It should be noted that while the above seems very HTML-specific, CubicTemp is
-still very much a general templating system. The syntax of both straight
-substitutions and block definitions can be changed quite easily by altering a
-couple of regular expressions in the template class.<br>
-<br>
-
+<p> There is <b>no</b> functional difference whatsoever between the two
+flavours. The two flavours simply allow us to craft templates that can easily
+be viewed in a web-browser, without being rendered first.  We will work through
+examples of this in the discussion of repeat blocks and named blocks.</p>

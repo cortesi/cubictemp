@@ -1,28 +1,23 @@
 
-<p> Cubictemp provides the programmer with the ability to define named blocks -
-that is, blocks of text that are defined in the template body itself, and can
-be referenced by name anywhere after the definition. </p>
+<h1> Defining blocks </h1>
 
-<!--(block|cubescript)-->
-    <!--(_block bar)-->
-        The time has come the @_!foo!@ said
-        To speak of many things...
-    <!--(_end)-->
-    @_!bar!@
+<p> Cubictemp allows you to define named blocks - that is, blocks of text that
+are defined in the template body itself, and can be referenced by name anywhere
+after the definition. </p>
+
+<!--(block|cubescript|htmlSyntax)-->
+<!--(_block bar)-->
+    The time has come the @_!foo!@ said
+    To speak of many things...
+<!--(_end)-->
+@_!bar!@
 <!--(end)-->
 
-<p> The template definition above declares a named block called "bar", which can
-then be referenced by name in the template. Behind the scenes, the lines in the
-block definition are actually used to instantiate a nested CubicTemp template,
-with a namespace equal to that where the block was <i>declared</i>. This
-template definition is then inserted into the current namespace, under the name
-specified in the block definition. Using the following piece of code:</p>
+<p> The template definition above declares a named block called "bar". Using
+the following piece of code:</p>
 
 <!--(block|pySyntax)-->
-import cubictemp
-
-temp = cubictemp.File("template", foo="walrus")
-print temp
+print cubictemp.File(template, foo="walrus")
 <!--(end)-->
 
 <p>the template above will output:</p>
@@ -34,12 +29,39 @@ print temp
 
 <p> Notice that the contents of the named block are not inserted into the
 output due to the <i>definition</i> of the named block, but rather due to its
-occurence in the following substitution tag.</p>
+occurence in the following substitution tag. Blocks can be nested to arbitrary
+depths. Block namespaces and scopes work similarly to Python namespaces and
+scopes. Consider the following template:</p>
 
-<p> One more thing that should be mentioned is the fact that named blocks (and
-Cubictemp templates in general) have the "_cubictemp_unescaped" attribute
-defined by default. This means that they will go unescaped when inserted using
-the standard 
+<!--(block|cubescript|htmlSyntax)-->
+<!--(_block bar)-->
+    <!--(_block bar)-->
+    one
+    <!--(_end)-->
+    @_!bar!@
+    two
+<!--(_end)-->
+@_!bar!@
+<!--(_block bar)-->
+    three
+<!--(_end)-->
+@_!bar!@
+<!--(end)-->
+
+<p> When evaluated, this will print: </p>
+
+
+
+<pre>
+    one
+    two
+    three
+</pre>
+
+
+<p> Named blocks, like Temp and File objects, have the "_cubictemp_unescaped"
+attribute defined by default. This means that they will go unescaped when
+inserted using the standard 
 
 <!--(block|cubescript)-->
 <code class="template">@_!...!@</code> 
@@ -50,55 +72,33 @@ the raw content of named blocks will almost never originate from an untrusted
 source, and that blocks very commonly intentionally contain HTML. </p>
 
 
-<h2> Calling blocks </h2>
+<h1> Calling blocks </h1>
 
-<p> During our discussion of <a href="../templates.html">templates</a>, we
-noted that a Template object can be rendered by calling it like a function. The
-user can also pass a set of keyword arguments to this call, which over-rides
-the namespace provided at the instantiation of the object. The same is true for
+<p> During the discussion of @!aLink("templates.html", "templates")!@, we noted
+that a Template object can be rendered by calling it like a function. The user
+can also pass a set of keyword arguments to this call, which over-rides the
+namespace provided at the instantiation of the object. The same is true for
 named blocks - you can call a block, and provide namespace arguments
 on-the-fly. Consider the following template:</p>
 
-<!--(block|cubescript)-->
-    <!--(_block bar)-->
-        The time has come the @_!foo!@ said
-        To speak of many things...
-    <!--(_end)-->
-    @_!bar(foo="walrus")!@
-    @_!bar(foo="carpenter"")!@
+<!--(block|cubescript|htmlSyntax)-->
+<!--(_block bar)-->
+    The time has come the @_!foo!@ said
+    To speak of many things...
+<!--(_end)-->
+@_!bar(foo="walrus")!@
+
+@_!bar(foo="carpenter"")!@
 <!--(end)-->
 
 <p> Regardless of the arguments supplied during instantiation of the Template
 object, the template above will produce the following output: </p>
 
 <pre>
-	The time has come the walrus said
-	To speak of many things...
+The time has come the walrus said
+To speak of many things...
 
-	The time has come the carpenter said
-	To speak of many things...
+The time has come the carpenter said
+To speak of many things...
 </pre>
-
-
-<h2> A pertinent example </h2>
-
-<p> Named blocks are incredibly useful. This document, for instance, is written
-and maintained with a system that uses CubicTemp templates extensively. Have a
-look at the Python code examples in this manual. Writing and maintaining syntax
-highlighted Python code by hand would be well neigh impossible (view the source
-for this page to see what's involved). Instead, we have written a Python
-wrapper object, that takes a block normal Python code as input, and produces
-properly indented and highlighted HTML when the "__repr__" method is called.
-Named blocks now make it easy to integrate the snippets of example code, and
-the rules for presenting them. Here is the the section of the template that
-produced the code sample above: </p>
-
-<p> The code above simply places the class "ColourPython" (too long to show
-here in full) in the namespace that gets passed to the template instance. The
-class is now available for instantiation within our template. The template then
-simply passes the output of a named block to the class, and the resulting
-string is displayed. Note the presence of the "_cubictemp_unescaped" attribute
-in the ColourPython class. This makes sure that our object can use special HTML
-characters in its expansion, without interference from the escaping
-mechanism.</p>
 
