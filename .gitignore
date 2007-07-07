@@ -1,7 +1,9 @@
 # Python object files
 *.py[cd]
+MANIFEST
+/build
+/dist
 # Vim swap files
 *.swp
-/build
 /dist
 /doc
