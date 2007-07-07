@@ -43,7 +43,7 @@ tmpl = """
 
 def main():
     start = time.time()
-    t = cubictemp.Temp(tmpl)
+    t = cubictemp.Template(tmpl)
     for i in range(1000):
         str(t)
     stop = time.time()

@@ -34,7 +34,7 @@ of a Javascript string, and inject malicious code. </p>
 <!--(block|cubescript|pySyntax)-->
 import cubictemp
 x = "<H1>foo</H1>"
-t = cubictemp.Temp("@_!x!@", x = x)
+t = cubictemp.Template("@_!x!@", x = x)
 print t
 <!--(end)-->
 
@@ -55,7 +55,7 @@ class X:
     def __str__(self):
         return "<H1>foo</H1>"
 
-t = cubictemp.Temp("@_!x!@", x = X())
+t = cubictemp.Template("@_!x!@", x = X())
 print t
 <!--(end)-->
 
@@ -83,7 +83,7 @@ program:</p>
 <!--(block|cubescript|pySyntax)-->
 import cubictemp
 x = "<H1>foo</H1>"
-t = cubictemp.Temp("$_!x!$", x = x)
+t = cubictemp.Template("$_!x!$", x = x)
 print t
 <!--(end)-->
 

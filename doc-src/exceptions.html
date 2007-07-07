@@ -1,7 +1,7 @@
 
-<h1> @!aLink("cubictemp.py.html", "TempError", "TempError")!@ </h1>
+<h1> @!aLink("cubictemp.py.html", "TemplateError", "TemplateError")!@ </h1>
 
-<p> Cubictemp throws the <b>TempError</b> exception whenever there is an error
+<p> Cubictemp throws the <b>TemplateError</b> exception whenever there is an error
 in an evaluated expression, or a syntax problem in a template. This exception
 exposes a number of attributes that are useful for debugging:</p>
 
@@ -27,5 +27,5 @@ A class variable that determines the number of lines of context to display
 (default 2). It can be changed as follows:
 
 <!--(block|pySyntax)-->
-cubictemp.TempError.contextLen = 5
+cubictemp.TemplateError.contextLen = 5
 <!--(end)-->

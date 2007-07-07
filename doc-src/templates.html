@@ -1,10 +1,10 @@
 
-<h1>The @!aLink("cubictemp.py.html", "Temp", "Temp")!@ Class</h1>
+<h1>The @!aLink("cubictemp.py.html", "Template", "Template")!@ Class</h1>
 
-<p> The <b>Temp</b> class is instantiated as follows: </p>
+<p> The <b>Template</b> class is instantiated as follows: </p>
 
 <!--(block|pySyntax)-->
-Temp(template, **kwargs)
+Template(template, **kwargs)
 <!--(end)-->
 
 <p> Here <b>template</b> is the complete text of a template and <b>kwargs</b>
@@ -14,7 +14,7 @@ after instantiation. So this script: </p>
 
 <!--(block|cubescript|pySyntax)-->
 template = "@_!one!@ @_!two!@."
-temp = cubictemp.Temp(template, one="Hello", two="bar")
+temp = cubictemp.Template(template, one="Hello", two="bar")
 print temp(two="walrus")
 <!--(end)-->
 
@@ -24,13 +24,13 @@ Will print:
 Hello walrus.
 </pre>
 
-<p> Temp objects can also be rendered by just "string-ifying" them, say through
+<p> Template objects can also be rendered by just "string-ifying" them, say through
 a <b>print</b> statement, or a call to the built-in <b>str</b>. </p>
 
 
 <!--(block|cubescript|pySyntax)-->
 template = "Hello @_!foo!@."
-temp = cubictemp.Temp(template, foo="bar")
+temp = cubictemp.Template(template, foo="bar")
 s = str(temp)
 print s
 print temp
@@ -44,13 +44,13 @@ Hello bar.
 </pre>
 
 
-<p> <b>Temp</b> objects have a special attribute <b>name</b> that is used to
+<p> <b>Template</b> objects have a special attribute <b>name</b> that is used to
 identify templates in error exceptions.You can set the template name manually
 as follows:</p>
 
 <!--(block|cubescript|pySyntax)-->
 template = "@_!nonexistent!@."
-temp = cubictemp.Temp(template)
+temp = cubictemp.Template(template)
 temp.name = "MyName"
 str(temp)
 <!--(end)-->
@@ -69,8 +69,8 @@ Traceback (most recent call last):
   File "/usr/lib/python2.5/site-packages/cubictemp.py", line 95, in __call__
     ret = self._eval(self._ecache, ns)
   File "/usr/lib/python2.5/site-packages/cubictemp.py", line 83, in _eval
-    raise TempError(s, self.pos, self.tmpl)
-cubictemp.TempError: TempError: NameError: "name 'nonexistent' is not defined"
+    raise TemplateError(s, self.pos, self.tmpl)
+cubictemp.TemplateError: NameError: "name 'nonexistent' is not defined"
     Context: line 1 in MyName:
         @_!nonexistent!@
         ^^^^^^^^^^^^^^^^
@@ -78,14 +78,15 @@ cubictemp.TempError: TempError: NameError: "name 'nonexistent' is not defined"
 
 <p> By default, the <b>name</b> attribute is set to "&lt;string&gt;". </p>
 
-<p> <b>Temp</b> and <b>File</b> both have a _cubictemp_unescaped attribute set
+<p> <b>Template</b> and <b>File</b> both have a _cubictemp_unescaped attribute set
 to True. This means that neither of these object types will be escaped in
 Cubictemp @!aLink("subs/definition.html", "escaped tags")!@. </p>
 
 <h1>The @!aLink("cubictemp.py.html","File","File")!@ Class</h1>
 
-<p> This convenience class extends Temp to ease a common usage scenario:
-loading a template from a file. The File class is instantiated as follows:</p>
+<p> This convenience class extends <b>Template</b> to ease a common usage
+scenario: loading a template from a file. The File class is instantiated as
+follows:</p>
 
 <!--(block | pySyntax)-->
 File(path, **kwargs)

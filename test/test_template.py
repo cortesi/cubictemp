@@ -6,13 +6,13 @@ import cubictemp
 class uBasic(pylid.TestCase):
     def test_simple(self):
         test = "@!1!@"
-        ct = cubictemp.Temp(test)
+        ct = cubictemp.Template(test)
         self.failUnless(str(ct) == "1")
 
     def test_simple2(self):
         test = "@!a!@"
         ns = {"a": 1}
-        ct = cubictemp.Temp(test, **ns)
+        ct = cubictemp.Template(test, **ns)
         self.failUnless(str(ct) == "1")
 
 

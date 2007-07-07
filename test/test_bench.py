@@ -34,6 +34,6 @@ tmpl = """
 
 class uBench(pylid.TestCase):
     def test_bench(self):
-        t = cubictemp.Temp(tmpl)
+        t = cubictemp.Template(tmpl)
         str(t)
 

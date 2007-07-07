@@ -27,10 +27,10 @@ class uProcessor(pylid.TestCase):
         assert s == "::**foo**::"
 
 
-class uTempError(pylid.TestCase):
+class uTemplateError(pylid.TestCase):
     def setUp(self):
-        self.s = cubictemp.Temp("text")
-        self.t = cubictemp.TempError("foo", 0, self.s)
+        self.s = cubictemp.Template("text")
+        self.t = cubictemp.TemplateError("foo", 0, self.s)
 
     def test_getLines(self):
         txt = """
@@ -61,13 +61,13 @@ class uTempError(pylid.TestCase):
                 @!foo!@
             <!--(end)-->
         """
-        self.failWith("line 5", cubictemp.Temp, s)
+        self.failWith("line 5", cubictemp.Template, s)
 
 
         s = """
             @![!@
         """
-        self.failWith("line 2", cubictemp.Temp, s)
+        self.failWith("line 2", cubictemp.Template, s)
 
         s = """
             <!--(block foo)-->
@@ -75,10 +75,10 @@ class uTempError(pylid.TestCase):
             <!--(end)-->
             @!foo!@
         """
-        self.failWith("line 3", cubictemp.Temp, s)
+        self.failWith("line 3", cubictemp.Template, s)
 
         s = "@!]!@"
-        self.failWith("line 1", cubictemp.Temp, s)
+        self.failWith("line 1", cubictemp.Template, s)
 
     def test_format_execution(self):
         s = """
@@ -87,12 +87,12 @@ class uTempError(pylid.TestCase):
             <!--(end)-->
             @!foo!@
         """
-        self.failWith("line 3", str, cubictemp.Temp(s))
+        self.failWith("line 3", str, cubictemp.Template(s))
 
 
 class u_Expression(pylid.TestCase):
     def setUp(self):
-        self.s = cubictemp.Temp("text")
+        self.s = cubictemp.Template("text")
 
     def test_call(self):
         e = cubictemp._Expression("foo", "@", 0, self.s, {})
@@ -149,7 +149,7 @@ class uText(pylid.TestCase):
 
 class uBlock(pylid.TestCase):
     def setUp(self):
-        self.s = cubictemp.Temp("text")
+        self.s = cubictemp.Template("text")
 
     def test_call(self):
         t = cubictemp._Block(None, 0, self.s, {})
@@ -169,7 +169,7 @@ class uIterable(pylid.TestCase):
         assert t(foo=[1, 2, 3]) == "123"
 
 
-class uTemp(pylid.TestCase):
+class uTemplate(pylid.TestCase):
     def setUp(self):
         self.s = """
             <!--(block foo)-->
@@ -185,7 +185,7 @@ class uTemp(pylid.TestCase):
         """
 
     def test_init(self):
-        c = cubictemp.Temp(self.s).block
+        c = cubictemp.Template(self.s).block
         assert len(c) == 4
         assert not c[0].txt.strip()
         assert not c[1].txt.strip()
@@ -200,11 +200,11 @@ class uTemp(pylid.TestCase):
         assert nest[0][1].expr == "tag"
 
     def test_str(self):
-        s = str(cubictemp.Temp("foo"))
+        s = str(cubictemp.Template("foo"))
         assert s == "foo"
 
     def test_call(self):
-        s = cubictemp.Temp(self.s)(tag="voing")
+        s = cubictemp.Template(self.s)(tag="voing")
         assert "voing" in s
 
     def test_unbalanced(self):
@@ -215,7 +215,7 @@ class uTemp(pylid.TestCase):
             @!foo!@
             one
         """
-        self.failWith("unbalanced block", cubictemp.Temp, s)
+        self.failWith("unbalanced block", cubictemp.Template, s)
 
     def test_complexIterable(self):
         s = """
@@ -223,7 +223,7 @@ class uTemp(pylid.TestCase):
                 @!i!@
             <!--(end)-->
         """
-        s = str(cubictemp.Temp(s))
+        s = str(cubictemp.Template(s))
         assert "[0, 1, 2, 3, 4" in s
 
     def test_simpleproc(self):
@@ -233,7 +233,7 @@ class uTemp(pylid.TestCase):
             <!--(end)-->
             @!foo!@
         """
-        t = cubictemp.Temp(s, strip=string.strip)
+        t = cubictemp.Template(s, strip=string.strip)
         assert "::one::" in t(dummyproc=dummyproc)
 
     def test_inlineproc(self):
@@ -242,7 +242,7 @@ class uTemp(pylid.TestCase):
                 one
             <!--(end)-->
         """
-        t = cubictemp.Temp(s, strip=string.strip)
+        t = cubictemp.Template(s, strip=string.strip)
         assert "::one::" in t(dummyproc=dummyproc)
 
     def test_namespace_err(self):
@@ -252,7 +252,7 @@ class uTemp(pylid.TestCase):
                 one
             <!--(end)-->
         """
-        t = cubictemp.Temp(s)
+        t = cubictemp.Template(s)
         self.failWith("not defined", t)
 
     def test_namespace_follow(self):
@@ -262,7 +262,7 @@ class uTemp(pylid.TestCase):
             <!--(end)-->
             @!one!@
         """
-        t = cubictemp.Temp(s)
+        t = cubictemp.Template(s)
         assert t().strip() == "one"
 
     def test_namespace_follow(self):
@@ -276,7 +276,7 @@ class uTemp(pylid.TestCase):
             <!--(end)-->
             @!one!@
         """
-        t = str(cubictemp.Temp(s))
+        t = str(cubictemp.Template(s))
         assert "one" in t
         assert "two" in t
 
@@ -297,7 +297,7 @@ class uTemp(pylid.TestCase):
             <!--(end)-->
             @!one!@
         """
-        t = str(cubictemp.Temp(s))
+        t = str(cubictemp.Template(s))
         assert "foo" in t
         assert "bar" in t
 
@@ -307,7 +307,7 @@ class uTemp(pylid.TestCase):
                 one
             <!--(end)-->
         """
-        t = cubictemp.Temp(s, strip=string.strip)
+        t = cubictemp.Template(s, strip=string.strip)
         assert t(dummyproc=dummyproc).strip() == "::one::"
 
     def test_processorchain(self):
@@ -316,7 +316,7 @@ class uTemp(pylid.TestCase):
                 one
             <!--(end)-->
         """
-        t = cubictemp.Temp(s, strip=string.strip, dummyproc2=dummyproc2)
+        t = cubictemp.Template(s, strip=string.strip, dummyproc2=dummyproc2)
         assert t(dummyproc=dummyproc).strip() == "**::one::**"
 
     def test_lines(self):
@@ -325,6 +325,6 @@ class uTemp(pylid.TestCase):
                 one
             :<!--(end)-->
         """
-        t = cubictemp.Temp(s)
+        t = cubictemp.Template(s)
         s = t()
         assert ":<!" in s

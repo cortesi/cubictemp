@@ -1,17 +1,17 @@
 
 <h1> Classes </h1>
 
-<h2> @!aLink("templates.html", "Temp")!@ </h2>
+<h2> @!aLink("templates.html", "Template")!@ </h2>
 
 <!--(block|pySyntax)-->
-t = Temp(template, **kwargs) # Instantiate with initial namespace
+t = Template(template, **kwargs) # Instantiate with initial namespace
 t(**kwargs) # Call with over-riding namespace
 str(t) # Or just string-ify, equivalent to calling with no arguments
 <!--(end)-->
 
 <h2> @!aLink("templates.html", "File")!@ </h2>
 
-<p> As for Temp, but the path to a template file is passed instead of a
+<p> As for Template, but the path to a template file is passed instead of a
 template string: </p>
 
 <!--(block|pySyntax)-->
