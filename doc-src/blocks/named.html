@@ -13,8 +13,9 @@ after the definition. </p>
 @_!bar!@
 <!--(end)-->
 
-<p> The template definition above declares a named block called "bar". Using
-the following piece of code:</p>
+<p> The template definition above declares a named block called "bar", and then
+substitutes it into the page - you may think of it as similar to declaring and
+then calling a Python function. Using the following piece of code:</p>
 
 <!--(block|pySyntax)-->
 print cubictemp.File(template, foo="walrus")

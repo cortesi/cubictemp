@@ -1,13 +1,15 @@
 
+<h1> Repeat Blocks </h1>
+
 <p>One of the most common templating tasks is the need to produce output from a
 sequence of items. For instance, we may need to fill a table with values, or
 dynamically generate a list-box. Cubictemp provides a repeat construct to take
 care of this problem. </p>
 
-<!--(block|cubescript)-->
-    <!--(_for foo in bar)-->
-        @_!foo!@
-    <!--(_end)-->
+<!--(block|cubescript|htmlSyntax)-->
+<!--(_for foo in bar)-->
+    @_!foo!@
+<!--(_end)-->
 <!--(end)-->
 
 <p> The template above does exactly what anyone familiar with Python would
@@ -16,68 +18,17 @@ an iterator), setting the value of "foo" to each element in turn. As in simple
 substitutions, the sequence definition is evaluated as an expression. This
 allows us to do things like the following:</p>
 
-<!--(block|cubescript)-->
-    <!--(_for foo in range(3))-->
-        Counting: @_!foo!@
-    <!--(_end)-->
+<!--(block|cubescript|htmlSyntax)-->
+<!--(_for foo in range(3))-->
+    Counting: @_!foo!@
+<!--(_end)-->
 <!--(end)-->
 
 <p>... producing the output:</p>
 
 <pre>
-	Counting: 0
-	Counting: 1
-	Counting: 2
+Counting: 0
+Counting: 1
+Counting: 2
 </pre>
 
-<h4> An Example </h4>
-
-<p>The following short example illustrates the use of repeat blocks. Say we need
-to dynamically generate a list box. First, we construct a general template for
-a simple select box:</p>
-
-<!--(block|cubescript)-->
-    <select>
-    <!--(_for option in ["Elephants", "Buffaloes", "Hippopotami", "Rhinoceri"])-->
-        <option>
-            @_!option!@
-        </option>
-    <!--(_end)-->
-    </select>
-<!--(end)-->
-
-<p> Notice that we have chosen our block flavour so that the HTML in the raw
-template is well-formed. This means that we can simply view the raw template 
-in a web-browser while we edit, to check that the output is what we want:</p>
-
-<!--(block|cubescript)-->
-    <select>
-    <!--(for option in ["Elephants", "Buffaloes", "Hippopotami", "Rhinoceri"])-->
-        <option>
-            @_!option!@
-        </option>
-    <!--(end)-->
-    </select> <br>
-<!--(end)-->
-
-<p>OK, the template seems to be correct - the list box looks right, and our option
-replacement tag appears in the right place. Now we need to combine it with code
-to actually do the substitution:</p>
-
-<!--(block|pySyntax)-->
-    import cubictemp
-
-    opts = ["Elephants", "Buffaloes", "Hippopotami", "Rhinoceri"]
-    temp = cubictemp.File("template", optionList = opts)
-    print temp
-<!--(end)-->
-
-<p>All of this combined, produces the lovely select box shown below:</p>
-
-<select>
-<!--(for opt in ["Elephants", "Buffaloes", "Hippopotami", "Rhinoceri"])-->
-	<option>
-		@!opt!@
-	</option>
-<!--(end)-->
-</select> 

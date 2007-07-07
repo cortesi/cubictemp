@@ -14,7 +14,7 @@ subs.html           "Substitution Tags"
 subs
 blocks.html         "Blocks"
 blocks
-conds.html          "Conditionals"
+example.html        "An Example"
 cheat.html          "Cheat Sheet"
 python("../cubictemp.py") "Source"
 admin.html          "Administrivia"

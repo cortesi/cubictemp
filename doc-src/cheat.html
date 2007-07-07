@@ -1,90 +1,81 @@
 
-<h2> The Temp Class </h2>
+<h1> Classes </h1>
 
-
-<p> The Temp class should be instantiated as follows: </p>
+<h2> @!aLink("templates.html", "Temp")!@ </h2>
 
 <!--(block|pySyntax)-->
-Temp(input, **kwargs)
+t = Temp(template, **kwargs) # Instantiate with initial namespace
+t(**kwargs) # Call with over-riding namespace
+str(t) # Or just string-ify, equivalent to calling with no arguments
 <!--(end)-->
 
-<p> Where "input" is a raw template.</p>
+<h2> File </h2>
 
-<h2> The File Class </h2>
-
-<p> As for the Temp, but the path to a template is passed instead of raw
-template data: </p>
+<p> As for Temp, but the path to a template file is passed instead of a
+template string: </p>
 
 <!--(block|pySyntax)-->
 File(path, **kwargs)
 <!--(end)-->
 
-<h2> Calling Templates and Blocks </h2>
 
-<p> Templates and blocks can be called with a set of over-ride arguments. </p>
+<h1> The templating language </h1>
 
-<!--(block|pySyntax)-->
-x = File(path, foo=1)
-x(foo=2)
-<!--(end)-->
+<h2> Substitution </h2>
 
-
-<h2> The templating language </h2>
-
-<h3> Substitution </h3>
-
-<p>
+<pre>
 <!--(block|cubescript)-->
 @_!escaped-expression!@
-<!--(end)-->
-</p>
-
-<p>
-<!--(block|cubescript)-->
 $_!unescaped-expression!$
+
+@_!a if cond else b!@
 <!--(end)-->
-</p>
-
-<h3> Block Types </h3>
-
-Named: <br><br>
-<!--(block|cubescript)-->
-    <!--(_block blockName)-->
-        @_!expression!@
-    <!--(_end)-->
-<!--(end)-->
+</pre>
 
 
-Repeat: <br><br>
-<!--(block|cubescript)-->
-    <!--(_for item in listItem)-->
-        @_!item!@
-    <!--(_end)-->
+<h2> Block Types </h2>
+
+Named: 
+<!--(block|cubescript|htmlSyntax)-->
+<!--(_block blockName)-->
+    @_!expression!@
+<!--(_end)-->
 <!--(end)-->
 
+With processors:
+<!--(block|cubescript|htmlSyntax)-->
+<!--(_block blockName|processor1|processor2)-->
+    @_!expression!@
+<!--(_end)-->
+<!--(end)-->
 
-<h3> Block Flavours </h3>
+Anonymous:
+<!--(block|cubescript|htmlSyntax)-->
+<!--(_block|processor1|processor2)-->
+    @_!expression!@
+<!--(_end)-->
+<!--(end)-->
 
-Fully commented: <br><br>
-<!--(block|cubescript)-->
+Repeat: 
+<!--(block|cubescript|htmlSyntax)-->
+<!--(_for item in listItem)-->
+    @_!item!@
+<!--(_end)-->
+<!--(end)-->
+
+
+<h2> Block Flavours </h2>
+
+Fully commented:
+<!--(block|cubescript|htmlSyntax)-->
     <!--(_block foo)-->
         @_!expression!@
     <!--(_end)-->
 <!--(end)-->
 
-Half commented: <br><br>
-<!--(block|cubescript)-->
+Half commented: 
+<!--(block|cubescript|htmlSyntax)-->
     <!--(_block foo)
         @_!expression!@
     (_end)-->
 <!--(end)-->
-
-
-<h3> Conditionals </h3>
-
-<code class="template">
-<!--(block|cubescript)-->
-	@_!positive if cond else negative!@
-<!--(end)-->
-</code><br>
-<br>
