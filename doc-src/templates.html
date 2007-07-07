@@ -94,7 +94,7 @@ File(path, **kwargs)
 <p> The "path" argument is the full path to a Cubictemp template. The name of
 the template is set to the provided path automatically.</p>
 
-<h1> Speed </h1>
+<h1> Speed and object instantiation</h1>
 
 <p> Cubictemp does as much work as it can at template instantiation. The
 template is parsed, blocks are readied for execution, and all expressions are
@@ -103,5 +103,3 @@ long-running applications like FastCGI applications, where templates can be
 initialised once up-front and then re-used. A nice by-product of this mode of
 operation is that syntax errors are caught during the pre-compilation process,
 as soon as templates are instantiated. </p>
-
-

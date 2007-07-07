@@ -8,13 +8,13 @@ select input field. First, we construct a general template for a simple select
 field:</p>
 
 <!--(block|cubescript|htmlSyntax)-->
-    <select>
-    <!--(_for option in ["Elephants", "Buffaloes", "Hippopotami", "Rhinoceri"])-->
-        <option>
-            @_!option!@
-        </option>
-    <!--(_end)-->
-    </select>
+<select>
+<!--(_for option in ["Elephants", "Buffaloes", "Hippopotami", "Rhinoceri"])-->
+    <option>
+        @_!option!@
+    </option>
+<!--(_end)-->
+</select>
 <!--(end)-->
 
 <p> Notice that we have chosen our block flavour so that the HTML in the raw
@@ -24,13 +24,13 @@ substitutions) is what we want:</p>
 
 <pre>
 <!--(block|cubescript)-->
-    <select>
-    <!--(_for option in ["Elephants", "Buffaloes", "Hippopotami", "Rhinoceri"])-->
-        <option>
-            @_!option!@
-        </option>
-    <!--(_end)-->
-    </select> 
+<select>
+<!--(_for option in ["Elephants", "Buffaloes", "Hippopotami", "Rhinoceri"])-->
+    <option>
+        @_!option!@
+    </option>
+<!--(_end)-->
+</select> 
 <!--(end)-->
 </pre>
 
