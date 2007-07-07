@@ -5,8 +5,8 @@
 section of its own. A very common use for blocks would be to declare a block of
 text, and then perform some transformation on it. One way to do this is to
 write a transformation function that takes a string-able object as argument,
-and returns a string, and pass it straight into the template namespace. We
-could then do something like the following:</p>
+and returns a string, and pass it straight in the template namespace. We could
+then do something like the following:</p>
 
 <!--(block|cubescript|htmlSyntax)-->
 <!--(_block codesnippet)-->
@@ -88,9 +88,9 @@ print temp
 easier. The scenario where a block with processors is declared, and then
 immediately substituted into the page is a common one. Anonymous processors
 remove the redundancy involved in this process, by allowing you to declare and
-call a block in the same step. The following snippet is functionally
-equivaltent to the template in the example above, except that it doesn't make
-an entry into the namespace:</p>
+call a block in the same step. The following snippet is functionally equivalent
+to the template in the example above, except that it doesn't make an entry into
+the namespace:</p>
 
 <!--(block|cubescript|htmlSyntax)-->
 <!--(_block|trimWhitespace|syntaxHighlight(style="mystyle"))-->
