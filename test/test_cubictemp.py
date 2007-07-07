@@ -38,17 +38,19 @@ class uTempException(pylid.TestCase):
            three
         """
         x = txt.find("one")
-        i, ctx = self.t._getLines(txt, x, 1)
+        i, ctx = self.t._getLines(txt, x)
         assert i == 2
-        assert len(ctx) == 4
-        assert ctx[1].strip() == "one"
+        lines = ctx.splitlines()
+        assert len(lines) == 5
+        assert lines[1].strip() == "one"
 
         x = txt.find("three")
-        i, ctx = self.t._getLines(txt, x, 2)
+        i, ctx = self.t._getLines(txt, x)
         assert i == 4
-        assert len(ctx) == 5
+        lines = ctx.splitlines()
+        assert len(lines) == 5
 
-    def test_format(self):
+    def test_format_compiletime(self):
         s = """
             <!--(block foo)-->
                 @!foo!@
@@ -59,6 +61,32 @@ class uTempException(pylid.TestCase):
             <!--(end)-->
         """
         self.failWith("line 5", cubictemp.Temp, s)
+
+
+        s = """
+            @![!@
+        """
+        self.failWith("line 2", cubictemp.Temp, s)
+
+        s = """
+            <!--(block foo)-->
+                @!]!@
+            <!--(end)-->
+            @!foo!@
+        """
+        self.failWith("line 3", cubictemp.Temp, s)
+
+        s = "@!]!@"
+        self.failWith("line 1", cubictemp.Temp, s)
+
+    def test_format_execution(self):
+        s = """
+            <!--(block foo)-->
+                @!bar!@
+            <!--(end)-->
+            @!foo!@
+        """
+        self.failWith("line 3", str, cubictemp.Temp(s))
 
 
 class u_Expression(pylid.TestCase):

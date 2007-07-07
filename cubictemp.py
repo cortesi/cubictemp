@@ -3,31 +3,45 @@ import cgi, re, itertools
 context = 2
 
 class TempException(Exception):
+    pos = None
+    tmpl = None
+    lineNo = None
+    contextLen = 2
     def __init__(self, val, pos, tmpl):
         Exception.__init__(self, val)
         self.val, self.pos, self.tmpl = val, pos, tmpl
-        self.lineNo, self.context = self._getLines(tmpl.txt, pos, context)
+        self.lineNo, self._contextStr = self._getLines(tmpl.txt, pos)
 
-    def _getLines(self, txt, pos, context):
+    def _getLines(self, txt, pos):
         lines = txt.splitlines(True)
         cur = 0
         for i, l in enumerate(lines):
             cur += len(l)
             if cur > pos:
                 break
-        startc = 0 if i < context else i - context
-        endc = len(lines) if i+context > len(lines) else i + context + 1
-        marker = "%s\n"%("^"*len(lines[i]))
-        context = lines[startc:i+1] + [marker] + lines[i+1:endc]
-        context = ["\t\t" + l.strip() for l in context]
-        return i + 1, context
+
+        if i < self.contextLen:
+            startc = 0
+        else:
+            startc = i - self.contextLen
+
+        if i + self.contextLen > len(lines):
+            endc = len(lines)
+        else:
+            endc = i + self.contextLen + 1
+
+        marker = "%s\n"%("^"*len(lines[i].rstrip()))
+        _contextStr = lines[startc:i+1] + [marker] + lines[i+1:endc]
+        _contextStr = ["        " + l.rstrip() for l in _contextStr]
+        _contextStr = "\n".join(_contextStr)
+        return i + 1, _contextStr
 
     def __str__(self):
         ret = [
             "TempException: %s"%self.val,
             "\tContext: line %s in %s:"%(self.lineNo, self.tmpl.name),
         ]
-        ret.append("\n".join(self.context))
+        ret.append(self._contextStr)
         return "\n".join(ret)
 
 
