@@ -5,6 +5,7 @@ import cubictemp
 def dummyproc(s):
     return "::%s::"%s
 
+
 def dummyproc2(s):
     return "**%s**"%s
 
