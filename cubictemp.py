@@ -7,9 +7,9 @@ class TempException(Exception):
     tmpl = None
     lineNo = None
     contextLen = 2
-    def __init__(self, val, pos, tmpl):
-        Exception.__init__(self, val)
-        self.val, self.pos, self.tmpl = val, pos, tmpl
+    def __init__(self, message, pos, tmpl):
+        Exception.__init__(self, message)
+        self.pos, self.tmpl = pos, tmpl
         self.lineNo, self._contextStr = self._getLines(tmpl.txt, pos)
 
     def _getLines(self, txt, pos):
@@ -38,7 +38,7 @@ class TempException(Exception):
 
     def __str__(self):
         ret = [
-            "TempException: %s"%self.val,
+            "TempException: %s"%self.message,
             "\tContext: line %s in %s:"%(self.lineNo, self.tmpl.name),
         ]
         ret.append(self._contextStr)

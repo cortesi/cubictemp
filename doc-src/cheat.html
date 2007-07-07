@@ -9,7 +9,7 @@ t(**kwargs) # Call with over-riding namespace
 str(t) # Or just string-ify, equivalent to calling with no arguments
 <!--(end)-->
 
-<h2> File </h2>
+<h2> @!aLink("templates.html", "File")!@ </h2>
 
 <p> As for Temp, but the path to a template file is passed instead of a
 template string: </p>
@@ -21,7 +21,7 @@ File(path, **kwargs)
 
 <h1> The templating language </h1>
 
-<h2> Substitution </h2>
+<h2> @!aLink("subs.html", "Substitution")!@</h2>
 
 <pre>
 <!--(block|cubescript)-->
@@ -35,28 +35,28 @@ $_!unescaped-expression!$
 
 <h2> Block Types </h2>
 
-Named: 
+@!aLink("named.html", "Named")!@: 
 <!--(block|cubescript|htmlSyntax)-->
 <!--(_block blockName)-->
     @_!expression!@
 <!--(_end)-->
 <!--(end)-->
 
-With processors:
+With @!aLink("processors.html", "processors")!@:
 <!--(block|cubescript|htmlSyntax)-->
 <!--(_block blockName|processor1|processor2)-->
     @_!expression!@
 <!--(_end)-->
 <!--(end)-->
 
-Anonymous:
+@!aLink("processors.html", "Anonymous")!@:
 <!--(block|cubescript|htmlSyntax)-->
 <!--(_block|processor1|processor2)-->
     @_!expression!@
 <!--(_end)-->
 <!--(end)-->
 
-Repeat: 
+@!aLink("repeat.html", "Repeat")!@: 
 <!--(block|cubescript|htmlSyntax)-->
 <!--(_for item in listItem)-->
     @_!item!@
@@ -64,7 +64,7 @@ Repeat:
 <!--(end)-->
 
 
-<h2> Block Flavours </h2>
+<h2> @!aLink("flavours.html", "Block Flavours")!@ </h2>
 
 Fully commented:
 <!--(block|cubescript|htmlSyntax)-->
