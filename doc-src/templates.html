@@ -69,8 +69,8 @@ Traceback (most recent call last):
   File "/usr/lib/python2.5/site-packages/cubictemp.py", line 95, in __call__
     ret = self._eval(self._ecache, ns)
   File "/usr/lib/python2.5/site-packages/cubictemp.py", line 83, in _eval
-    raise TempException(s, self.pos, self.tmpl)
-cubictemp.TempException: TempException: NameError: "name 'nonexistent' is not defined"
+    raise TempError(s, self.pos, self.tmpl)
+cubictemp.TempError: TempError: NameError: "name 'nonexistent' is not defined"
     Context: line 1 in MyName:
         @_!nonexistent!@
         ^^^^^^^^^^^^^^^^

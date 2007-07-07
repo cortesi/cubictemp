@@ -27,10 +27,10 @@ class uProcessor(pylid.TestCase):
         assert s == "::**foo**::"
 
 
-class uTempException(pylid.TestCase):
+class uTempError(pylid.TestCase):
     def setUp(self):
         self.s = cubictemp.Temp("text")
-        self.t = cubictemp.TempException("foo", 0, self.s)
+        self.t = cubictemp.TempError("foo", 0, self.s)
 
     def test_getLines(self):
         txt = """

@@ -1,16 +1,15 @@
 #!/usr/local/bin/python
 import cgi, re, itertools
-context = 2
 
-class TempException(Exception):
+class TempError(Exception):
     pos = None
-    tmpl = None
+    temp = None
     lineNo = None
     contextLen = 2
-    def __init__(self, message, pos, tmpl):
+    def __init__(self, message, pos, temp):
         Exception.__init__(self, message)
-        self.pos, self.tmpl = pos, tmpl
-        self.lineNo, self._contextStr = self._getLines(tmpl.txt, pos)
+        self.pos, self.temp = pos, temp
+        self.lineNo, self._contextStr = self._getLines(temp.txt, pos)
 
     def _getLines(self, txt, pos):
         lines = txt.splitlines(True)
@@ -38,8 +37,8 @@ class TempException(Exception):
 
     def __str__(self):
         ret = [
-            "TempException: %s"%self.message,
-            "\tContext: line %s in %s:"%(self.lineNo, self.tmpl.name),
+            "%s"%self.message,
+            "\tContext: line %s in %s:"%(self.lineNo, self.temp.name),
         ]
         ret.append(self._contextStr)
         return "\n".join(ret)
@@ -86,14 +85,14 @@ class _Eval:
                 return compile(expr, "<string>", "eval")
             except SyntaxError, value:
                 s = 'Invalid expression: "%s"'%(expr)
-                raise TempException(s, pos, tmpl)
+                raise TempError(s, pos, tmpl)
 
     def _eval(self, e, ns):
         try:
             return eval(e, {}, ns)
         except NameError, value:
             s = 'NameError: "%s"'%value
-            raise TempException(s, self.pos, self.tmpl)
+            raise TempError(s, self.pos, self.tmpl)
 
 
 class _Expression(_Eval):
@@ -146,7 +145,7 @@ class _Iterable(list, _Eval):
             loopIter = iter(loopIter)
         except TypeError:
             s = "Can not iterate over %s"%self.iterable
-            raise TempException(s, self.pos, self.tmpl)
+            raise TempError(s, self.pos, self.tmpl)
         s = []
         for i in loopIter:
             ns[self.varname] = i
@@ -204,7 +203,7 @@ class Temp:
             elif g["end"]:
                 stack.pop()
                 if not stack:
-                    raise TempException("Unbalanced block.", pos, self)
+                    raise TempError("Unbalanced block.", pos, self)
             elif g["expr"]:
                 e = _Expression(g["expr"], g["flavor"], pos, self, parent.ns.copy())
                 parent.append(e)

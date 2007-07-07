@@ -14,6 +14,7 @@ subs.html           "Substitution Tags"
 subs
 blocks.html         "Blocks"
 blocks
+exceptions.html     "Exceptions"
 example.html        "An Example"
 cheat.html          "Cheat Sheet"
 python("../cubictemp.py") "Source"
