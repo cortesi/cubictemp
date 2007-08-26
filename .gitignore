@@ -5,5 +5,4 @@ MANIFEST
 /dist
 # Vim swap files
 *.swp
-/dist
 /doc
