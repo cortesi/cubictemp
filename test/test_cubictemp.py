@@ -10,18 +10,18 @@ def dummyproc2(s):
     return "**%s**"%s
 
 
-class uProcessor(pylid.TestCase):
+class u_Processor(pylid.TestCase):
     def test_procs(self):
-        p = cubictemp.Processor() | dummyproc
+        p = cubictemp._Processor() | dummyproc
         assert p("foo") == "::foo::"
 
     def test_procs_chain(self):
-        p = cubictemp.Processor()
+        p = cubictemp._Processor()
         p = p | dummyproc | dummyproc2
         s = p("foo")
         assert s == "**::foo::**"
 
-        p = cubictemp.Processor()
+        p = cubictemp._Processor()
         p = p | dummyproc2 | dummyproc
         s = p("foo")
         assert s == "::**foo**::"

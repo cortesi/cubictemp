@@ -57,7 +57,7 @@ def escape(s):
     return s
 
 
-class Processor:
+class _Processor:
     def __init__(self):
         self.funcs = []
 
@@ -125,7 +125,7 @@ class _Block(list, _Eval):
     def __call__(self, **ns):
         r = "".join([i(**ns) for i in self])
         if self.processor:
-            ns["_cubictemp_processor"] = Processor()
+            ns["_cubictemp_processor"] = _Processor()
             proc = self._eval(self._ecache, ns)
             return proc(r)
         else:
