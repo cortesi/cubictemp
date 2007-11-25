@@ -1,5 +1,5 @@
 import string
-import pylid
+import libpry
 import cubictemp
 
 def dummyproc(s):
@@ -10,7 +10,7 @@ def dummyproc2(s):
     return "**%s**"%s
 
 
-class u_Processor(pylid.TestCase):
+class u_Processor(libpry.AutoTree):
     def test_procs(self):
         p = cubictemp._Processor() | dummyproc
         assert p("foo") == "::foo::"
@@ -27,7 +27,7 @@ class u_Processor(pylid.TestCase):
         assert s == "::**foo**::"
 
 
-class uTemplateError(pylid.TestCase):
+class uTemplateError(libpry.AutoTree):
     def setUp(self):
         self.s = cubictemp.Template("text")
         self.t = cubictemp.TemplateError("foo", 0, self.s)
@@ -61,13 +61,13 @@ class uTemplateError(pylid.TestCase):
                 @!foo!@
             <!--(end)-->
         """
-        self.failWith("line 5", cubictemp.Template, s)
+        libpry.raises("line 5", cubictemp.Template, s)
 
 
         s = """
             @![!@
         """
-        self.failWith("line 2", cubictemp.Template, s)
+        libpry.raises("line 2", cubictemp.Template, s)
 
         s = """
             <!--(block foo)-->
@@ -75,10 +75,10 @@ class uTemplateError(pylid.TestCase):
             <!--(end)-->
             @!foo!@
         """
-        self.failWith("line 3", cubictemp.Template, s)
+        libpry.raises("line 3", cubictemp.Template, s)
 
         s = "@!]!@"
-        self.failWith("line 1", cubictemp.Template, s)
+        libpry.raises("line 1", cubictemp.Template, s)
 
     def test_format_execution(self):
         s = """
@@ -87,10 +87,10 @@ class uTemplateError(pylid.TestCase):
             <!--(end)-->
             @!foo!@
         """
-        self.failWith("line 3", str, cubictemp.Template(s))
+        libpry.raises("line 3", str, cubictemp.Template(s))
 
 
-class u_Expression(pylid.TestCase):
+class u_Expression(libpry.AutoTree):
     def setUp(self):
         self.s = cubictemp.Template("text")
 
@@ -105,7 +105,7 @@ class u_Expression(pylid.TestCase):
         assert e(foo=t) == "bar"
 
     def test_syntaxerr(self):
-        self.failWith(
+        libpry.raises(
             "invalid expression",
             cubictemp._Expression,
             "for x", "@",
@@ -114,7 +114,7 @@ class u_Expression(pylid.TestCase):
 
     def test_namerr(self):
         e = cubictemp._Expression("foo", "@", 0, self.s, {})
-        self.failWith(
+        libpry.raises(
             "NameError",
             e,
         )
@@ -141,13 +141,13 @@ class u_Expression(pylid.TestCase):
         assert ">" in f
 
 
-class uText(pylid.TestCase):
+class uText(libpry.AutoTree):
     def test_call(self):
         t = cubictemp._Text("foo")
         assert t() == "foo"
         
 
-class uBlock(pylid.TestCase):
+class uBlock(libpry.AutoTree):
     def setUp(self):
         self.s = cubictemp.Template("text")
 
@@ -162,14 +162,14 @@ class uBlock(pylid.TestCase):
         assert t(dummyproc=dummyproc) == "::foo::"
 
 
-class uIterable(pylid.TestCase):
+class uIterable(libpry.AutoTree):
     def test_call(self):
         t = cubictemp._Iterable("foo", "bar", 0, "foo", {})
         t.append(cubictemp._Expression("bar", "@", 0, "foo", {}))
         assert t(foo=[1, 2, 3]) == "123"
 
 
-class uTemplate(pylid.TestCase):
+class uTemplate(libpry.AutoTree):
     def setUp(self):
         self.s = """
             <!--(block foo)-->
@@ -215,7 +215,7 @@ class uTemplate(pylid.TestCase):
             @!foo!@
             one
         """
-        self.failWith("unbalanced block", cubictemp.Template, s)
+        libpry.raises("unbalanced block", cubictemp.Template, s)
 
     def test_complexIterable(self):
         s = """
@@ -253,7 +253,7 @@ class uTemplate(pylid.TestCase):
             <!--(end)-->
         """
         t = cubictemp.Template(s)
-        self.failWith("not defined", t)
+        libpry.raises("not defined", t)
 
     def test_namespace_follow(self):
         s = """
@@ -328,3 +328,14 @@ class uTemplate(pylid.TestCase):
         t = cubictemp.Template(s)
         s = t()
         assert ":<!" in s
+
+
+tests = [
+    u_Processor(),
+    uTemplateError(),
+    u_Expression(),
+    uText(),
+    uBlock(),
+    uIterable(),
+    uTemplate(),
+]

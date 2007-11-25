@@ -1,4 +1,4 @@
-import pylid
+import libpry
 import cubictemp
 
 tmpl = """
@@ -32,8 +32,12 @@ tmpl = """
     lorem ipsum sic dolor samet
 """
 
-class uBench(pylid.TestCase):
+class uBench(libpry.AutoTree):
     def test_bench(self):
         t = cubictemp.Template(tmpl)
         str(t)
 
+
+tests = [
+    uBench()
+]
