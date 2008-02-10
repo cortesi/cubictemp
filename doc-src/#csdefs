@@ -2,7 +2,7 @@
 docTitle = "Cubictemp Manual"
 docMaintainer = "Aldo Cortesi"
 docMaintainerEmail = "aldo@nullcube.com"
-@layout = GridLayout("yui-t2", "doc3")
+@layout = TwoPane("yui-t2", "doc3")
 foot = "Copyright Nullcube 2007"
 head <- "_header.html"
 sidebar = "$!siblingIndex('/index.html', exclude=['countershape'])!$"
