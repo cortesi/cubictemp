@@ -1,12 +1,7 @@
-body { 
-    background-color:   #333333; 
-    color:              #dddddd;
-}
 
 #hd h1 {
     font-size:      2em;
     font-weight: bold;
-    background:     #555555 none repeat scroll 0%;
 }
 
 #title {
@@ -44,6 +39,13 @@ body {
     font-size: 1.2em;
 }
 
+.highlight pre {
+    border-bottom:      1px solid #CCCCCC;
+    border-top:         1px solid #CCCCCC;
+    padding:            10px;
+    background:         #F8F8F8 none repeat scroll 0% 0%;
+    margin-bottom:      10px;
+}
 
 #ft {
     padding:    10px 15px 17px 10px;
