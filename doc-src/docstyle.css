@@ -1,42 +1,26 @@
 
+.pageindex a {
+    color: #437095;
+}
+
+
+.pageindex a:hover {
+    color: #437095;
+}
+
+
+body {
+    font-family:Georgia,serif;
+    font-size:15px;
+}
+
 #hd h1 {
     font-size:      2em;
-    font-weight: bold;
-}
-
-#title {
-    padding-top: 60px;
-    margin-left: 330px;
-    font-weight: bold;
-}
-
-
-#bd h1 {
-    margin-top:          15px;
+    font-weight:    bold;
     border-bottom-width: 1px;
     border-bottom-style: solid;
     border-bottom-color: #aaaaaa;
-    font-weight: bold;
-    font-size: 1.8em;
-}
-
-
-#bd h2, #bd h3 {
-    font-weight: bold;
-    font-size: 1.6em;
-}
-
-#bd h2 {
-    font-weight: bold;
-    padding-left: 5px;
-    border-left: 5px;
-    border-left-style: solid;
-    border-left-color: #aaaaaa;
-    font-size: 1.4em;
-}
-    
-#bd h3 {
-    font-size: 1.2em;
+    margin-bottom:  15px;
 }
 
 .highlight pre {

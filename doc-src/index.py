@@ -21,7 +21,6 @@ pages = [
     Directory("blocks"),
     Page("exceptions.html", "Exceptions"),
     Page("example.html", "An Example"),
-    Page("cheat.html", "Cheat Sheet"),
     PythonPage("../cubictemp.py", "Source"),
     Page("admin.html", "Administrivia")
 ]
