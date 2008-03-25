@@ -1,31 +1,48 @@
 
-<h1> Features </h1>
+__A small, elegant templating system for Python.__
 
-<p><b> Cubictemp is a small, elegant templating system for Python.</b></p>
+Features
+========
 
-<ul>
 
-    <li> Encourages separation of interface and program logic by disallowing
-    statements in templates. </li>
+    * Simple, easy to use, well-tested and well-documented.
 
-    <li> Integrates tightly with Python, allowing you to pass arbitrary Python
-    objects into a template, walk sequences and iterators, and evaluate
-    expressions.</li>
+    * Integrates tightly with Python - pass arbitrary Python objects into a
+    template, walk sequences and iterators, evaluate expressions.
 
-    <li> Includes default escaping, protecting you against common classes of
-    HTML and Javascript Cross-Site Scripting vulnerabilities.</li>
+    * Includes default escaping, protecting you against common classes of
+    HTML and Javascript Cross-Site Scripting vulnerabilities.
 
-    <li> Cubictemp is tiny - only ~ 170 SLOC. This is a good thing. There are
+    * Encourages separation of interface and program logic by disallowing
+    statements in templates.
+
+    * Cubictemp is tiny (only ~ 170 SLOC). This is a good thing. There are
     many large, over-designed Python templating systems out there.  Cubictemp
     proves that a templating sytem can be complete, elegant, powerful, fast and
-    small, all at the same time.</li>
-
-    <li> Simple, easy to use, well-tested and well-documented. </li>
-
-</ul>
+    small, all at the same time.
 
 
-<h1> Requirements </h1>
+Requirements
+============
 
-<p> Cubictemp requires Python 2.4 or newer. </p>
+Cubictemp requires Python 2.4 or newer.
 
+
+Hello walrus
+============
+
+The following example constructs a template with a single substitution tag,
+and then calls it with an evaluation namespace:
+
+<!--(block | cubescript | pySyntax)-->
+import cubictemp
+
+template = cubictemp.Template("Hello @_!foo!@.")
+print template(foo="walrus")
+<!--(end)-->
+
+The output of this program is:
+
+<pre class="output">
+Hello walrus.
+</pre>

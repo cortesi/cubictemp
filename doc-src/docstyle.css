@@ -29,9 +29,49 @@ body {
     padding:            10px;
     background:         #F8F8F8 none repeat scroll 0% 0%;
     margin-bottom:      10px;
+    overflow:           auto;
+}
+
+.grokdoc {
+    background:         transparent !important;
+}
+
+.grokdoc_module {
+    background:         #F8F8F8;
+    padding: 5px;
+}
+
+.grokdoc_vartable {
+    margin-bottom: 10px;
+}
+
+.grokdoc_vartable p {
+    margin: 0px;
+}
+
+.grokdoc_class {
+    background:         #F8F8F8;
+}
+
+.output {
+    border-bottom:      1px solid #CCCCCC;
+    border-top:         1px solid #CCCCCC;
+    padding:            10px;
+    background:         #F8F8F8 none repeat scroll 0% 0%;
+    margin-bottom:      10px;
+    overflow:           auto;
 }
 
 #ft {
     padding:    10px 15px 17px 10px;
     font-size:  0.8em;
+}
+
+dl {
+    margin: 0px;
+    margin-top: 5px;
+}
+
+dt {
+    font-weight:  bold;
 }

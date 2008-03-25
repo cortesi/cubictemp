@@ -1,5 +1,3 @@
-#!/usr/local/bin/python
-
 # Copyright (c) 2003-2008, Nullcube Pty Ltd All rights reserved.
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,9 +21,16 @@
 import cgi, re, itertools
 
 class TemplateError(Exception):
+    """
+        Template evaluation exception class.
+    """
+    # Character offset within the raw template at which the error occurred
     pos = None
+    # Template object
     template = None
+    # Line number
     lineNo = None
+    # Error context length
     contextLen = 2
     def __init__(self, message, pos, template):
         Exception.__init__(self, message)
@@ -190,8 +195,13 @@ class Template:
         ((?P<flavor>@|\$)!(?P<expr>.+?)!(?P=flavor))
     """
     _reParts = re.compile(_bStart, re.X|re.M)
+    # Name by which this template is referred to in exceptions.
     name = "<string>"
     def __init__(self, txt, **nsDict):
+        """
+            :txt Template body
+            :nsDict Namespace dictionary
+        """
         self.nsDict, self.txt = nsDict, txt
         matches = self._reParts.finditer(txt)
         pos = 0
@@ -232,16 +242,33 @@ class Template:
             stack[-1].append(_Text(txt[pos:]))
 
     def __str__(self):
+        """
+            Evaluate the template in the namespace provided at instantiation.
+        """
         return self()
 
     def __call__(self, **override):
+        """
+            :override A set of key/value pairs.
+
+            Evaluate the template, over-riding the instantiation namespace with
+            the specified key/value pairs. Returns a string.
+        """
         ns = self.nsDict.copy()
         ns.update(override)
         return self.block(**ns)
 
 
 class File(Template):
+    """
+        Convenience class that extends Template to provide easy instantiation
+        from a file.
+    """
     def __init__(self, filename, **nsDict):
+        """
+            :filename Full Path to file containing template body.
+            :nsDict Instantiation namespace dictionary.
+        """
         self.name = filename
         data = open(filename).read()
         Template.__init__(self, data, **nsDict)

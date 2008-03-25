@@ -1,6 +1,7 @@
 
 import countershape.widgets
 import countershape.layout
+import countershape.grok
 from countershape.doc import *
 
 ns.docTitle = "Cubictemp Manual"
@@ -11,16 +12,15 @@ ns.head = readFrom("_header.html")
 ns.sidebar = countershape.widgets.SiblingPageIndex('/index.html', exclude=['countershape'])
 this.layout = countershape.layout.TwoPane("yui-t2", "doc3")
 
+ns.ctgrok = countershape.grok.grok("../cubictemp.py")
+
 pages = [
     Page("index.html", "Introduction"),
-    Page("start.html", "Getting Started"),
-    Page("templates.html", "Templates"),
     Page("subs.html", "Substitution Tags"),
     Directory("subs"),
     Page("blocks.html", "Blocks"),
     Directory("blocks"),
-    Page("exceptions.html", "Exceptions"),
+    Page("api.html", "API"),
     Page("example.html", "An Example"),
-    PythonPage("../cubictemp.py", "Source"),
     Page("admin.html", "Administrivia")
 ]

@@ -1,0 +1,13 @@
+
+$!ctgrok()!$
+
+Speed and object instantiation
+==============================
+
+Cubictemp does as much work as it can at template instantiation. The template
+is parsed, blocks are readied for execution, and all expressions are
+pre-compiled. This means that Cubictemp is very, very fast when used in
+long-running applications like FastCGI applications, where templates can be
+initialised once up-front and then re-used. A nice by-product of this mode of
+operation is that syntax errors are caught during the pre-compilation process,
+as soon as templates are instantiated.
