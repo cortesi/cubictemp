@@ -16,10 +16,9 @@ ns.ctgrok = countershape.grok.grok("../cubictemp.py")
 
 pages = [
     Page("index.html", "Introduction"),
-    Page("subs.html", "Substitution Tags"),
-    Directory("subs"),
+    Page("subs.html", "Tags"),
     Page("blocks.html", "Blocks"),
-    Directory("blocks"),
+    Page("processors.html", "Processors"),
     Page("api.html", "API"),
     Page("example.html", "An Example"),
     Page("admin.html", "Administrivia")

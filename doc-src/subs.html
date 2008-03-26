@@ -1,90 +1,90 @@
 
-<h1> Tags and Expressions </h1>
+Tags and Expressions
+====================
 
-<p> Cubictemp evaluates everything between the substitution delimiters 
-
+Cubictemp evaluates expressions between substitution delimiters as expressions
+in the specified namespace. The result of this evaluation is converted to a
+string, and placed in the template at the appropriate place. There are two
+flavours of delimiters __escaped__ 
 <!--(block|cubescript)-->
-- @_!...!@ and $_!...!$ -
+- @_!...!@ -
+<!--(end)-->
+and __unescaped__
+<!--(block|cubescript)-->
+- $_!...!$.
 <!--(end)-->
 
-as expressions in the specified namespace. The result of this evaluation is
-converted to a string with the built-in function <b>str</b>, and placed in the
-template at the appropriate place.</p> 
+Combining this template
 
-<p> At this point it is important to distinguish clearly between Python
-expressions and Python statements. Python <b>expressions</b> can conveniently
-be thought of as anything that can be on the right-hand-side of an equals sign.
-Arithmetic operators, boolen operators, parentheses for grouping,
-method/function calls, object instantiation and conditional expressions are all
-valid components of expressions. Python <b>statements</b>, on the other hand,
-include things like <b>while</b>, <b>print</b>, variable assignment and full
-<b>if</b> blocks. Cubictemp allows <b>only expressions</b> in places where it
-evaluates Python code. This is a deliberate choice - limiting templates to
-expressions ensures that program logic lives in the Python program files where
-they belong. This enforces a hard separation between code and presentation,
-making it easier to unit-test, change and maintain the application as a
-whole.</p>
-
-<p>To illustrate this, take a look at the template below:</p>
-
-<pre>
+<pre class="output">
 <!--(block|cubescript)-->
 @_!foo!@ times two is @_!foo*2!@
 @_!foo!@ squared is @_!foo*foo!@
+@_!"yes" if (1==2) else "no"!@
+key is $_!mydict["key"]!$
 <!--(end)-->
 </pre>
 
-<p> ...and this accompanying code snippet: </p>
+...with the following code:
 
 <!--(block|pySyntax)-->
 import cubictemp
-temp = cubictemp.File("template", foo=3)
-print temp
+print cubictemp.File(
+            "template",
+            foo=3,
+            mydict=dict(key="value")
+        )
 <!--(end)-->
 
-<p> The output here would look like this:</p>
+... produces this:
 
-<pre>
+<pre class="output">
 3 times two is 6
 3 squared is 9
+no
+key is value
 </pre>
 
-<p> Similarly, if <b>foo</b> happened to be a dictionary, we could extract a
-value from it inside a template like this:</p>
+At this point it is important to distinguish between Python expressions and
+statements. An <b>expressions</b> can be thought of as anything that can be on
+the right-hand-side of an equals sign. Arithmetic operators, boolean operators,
+parentheses for grouping, method/function calls, object instantiation and
+conditional expressions are all valid components of expressions. Python
+<b>statements</b> include things like <b>while</b>, <b>print</b>, variable
+assignment and full <b>if</b> blocks. Cubictemp allows <b>only expressions</b>
+in subtitution tags. 
 
-<pre>
-<!--(block|cubescript)-->
-@_!foo["bar"]!@ 
+
+Escaping
+========
+
+In an escaped substitution tag, the following characters are converted to their
+corresponding HTML escape sequences: &amp;, &lt;, &gt;, &quot;, &#146;.
+Concretely, this means that the following program:
+
+<!--(block|cubescript|pySyntax)-->
+import cubictemp
+print cubictemp.Template(
+        "@_!x!@ $_!x!$",
+        x = "<H1>foo</H1>"
+    )
 <!--(end)-->
-</pre>
 
-<p> And if <b>"foo"</b> was an object with an attribute <b>"x"</b>, we could
-reference the attribute by saying:</p>
+... will print:
 
-<pre>
-<!--(block|cubescript)-->
-@_!foo.x!@ 
+<!--(block|htmlSyntax)-->
+<H1>foo</H1> &lt;H1&gt;foo&lt;/H1&gt;
 <!--(end)-->
-</pre>
 
-<p> This ability to evaluate expressions makes Cubictemp templates very
-expressive. </p>
+Always use the <b>escaped</b> substitution syntax if you can. When you really
+need to place HTML in a substitution tag, make sure you carefully evaluate the
+application context to make sure that users cannot inject malicious data.
 
 
-<h2> A special case: conditionals </h2>
+Controlling Escaping
+====================
 
-<p> Python's conditional expressions are especially handy in templates. Since
-this expression type is relatively rarely used, we provide an example of its
-use in a tag expression. Evaluating this template:</p>
-
-<pre>
-<!--(block|cubescript)-->
-@_!"foo" if (1==2) else "bar"!@
-<!--(end)-->
-</pre>
-
-<p>... will result in: </p>
-
-<pre>
-bar
-</pre>
+Sometimes, it is handy to be able to construct objects that bypass Cubictemp's
+escaping mechanism, regardless of the type of tag in which they occur. You can
+signal this to cubictemp by giving the object a special attribute
+"_cubictemp_unescaped" which evaluates to true.
