@@ -310,6 +310,18 @@ class uTemplate(libpry.AutoTree):
         t = cubictemp.Template(s, strip=string.strip)
         assert t(dummyproc=dummyproc).strip() == "::one::"
 
+    def test_block_following_whitespace(self):
+        s = """
+            <!--(block|dummyproc)-->
+                one
+            <!--(end)-->
+
+
+            test
+        """
+        t = cubictemp.Template(s, strip=string.strip)
+        assert "\n\n" in t(dummyproc=dummyproc)
+
     def test_processorchain(self):
         s = """
             <!--(block|strip|dummyproc|dummyproc2)-->

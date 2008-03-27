@@ -188,9 +188,9 @@ class Template:
                     for\s+(?P<varName>\w+)\s+in\s+(?P<iterable>.+)
                 |   block(\s+(?P<blockName>\w+))? \s* (\|\s*(?P<processor>.+))?
             )
-        \s*\)(-->)?\s*?\n) | 
+        \s*\)(-->)?[ \t\r\f\v]*?\n) | 
         # The end of a tag
-        (?P<end>^[ \t]*(<!--)?\(\s*end\s*\)-->\s*\n) |
+        (?P<end>^[ \t]*(<!--)?\(\s*end\s*\)-->[ \t\r\f\v]*\n) |
         # An expression
         ((?P<flavor>@|\$)!(?P<expr>.+?)!(?P=flavor))
     """

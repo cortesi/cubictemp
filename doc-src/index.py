@@ -15,11 +15,11 @@ this.layout = countershape.layout.TwoPane("yui-t2", "doc3")
 ns.ctgrok = countershape.grok.grok("../cubictemp.py")
 
 pages = [
-    Page("index.html", "Introduction"),
+    #Page("index.html", "Introduction"),
     Page("subs.html", "Tags"),
-    Page("blocks.html", "Blocks"),
-    Page("processors.html", "Processors"),
-    Page("api.html", "API"),
-    Page("example.html", "An Example"),
-    Page("admin.html", "Administrivia")
+    #Page("blocks.html", "Blocks"),
+    #Page("processors.html", "Processors"),
+    #Page("api.html", "API"),
+    #Page("example.html", "An Example"),
+    #Page("admin.html", "Administrivia")
 ]

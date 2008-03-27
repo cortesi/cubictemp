@@ -2,10 +2,9 @@
 Tags and Expressions
 ====================
 
-Cubictemp evaluates expressions between substitution delimiters as expressions
-in the specified namespace. The result of this evaluation is converted to a
-string, and placed in the template at the appropriate place. There are two
-flavours of delimiters __escaped__ 
+Cubictemp evaluates expressions between tag delimiters as expressions in the
+specified namespace. The result is converted to a string, and placed in the
+rendered template. There are two flavours of delimiters: __escaped__ 
 <!--(block|cubescript)-->
 - @_!...!@ -
 <!--(end)-->
@@ -14,7 +13,8 @@ and __unescaped__
 - $_!...!$.
 <!--(end)-->
 
-Combining this template
+Example
+-------
 
 <pre class="output">
 <!--(block|cubescript)-->
