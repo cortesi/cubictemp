@@ -1,12 +1,11 @@
 
-<h1> Processors </h1>
+Processors
+==========
 
-<p> There is a powerful extension to the named block syntax that deserves a
-section of its own. A very common use for blocks would be to declare a block of
-text, and then perform some transformation on it. One way to do this is to
-write a transformation function that takes a string-able object as argument,
-and returns a string, and pass it straight in the template namespace. We could
-then do something like the following:</p>
+One common use for blocks is to declare a named block, and then perform some
+transformation on it when it is inserted back into the document. One way to do
+this is to write a transformation function that takes a string and returns a
+string, and pass it straight in the template namespace for use: 
 
 <!--(block|cubescript|htmlSyntax)-->
 <!--(_block codesnippet)-->
@@ -16,9 +15,7 @@ then do something like the following:</p>
 @_!syntaxHighlight(codesnippet)!@
 <!--(end)-->
 
-<p> This is fine, but somewhat verbose. If you want to chain multiple text
-transformations, it quickly becomes verbose. Cubictemp <b>processors</b> solve
-this problem nicely. Consider the following template:</p>
+Cubictemp has a special __processor__ syntax to facilitate this use pattern.
 
 <!--(block|cubescript|htmlSyntax)-->
 <!--(_block codesnippet|syntaxHighlight)-->
@@ -28,12 +25,9 @@ this problem nicely. Consider the following template:</p>
 @_!codesnippet!@
 <!--(end)-->
 
-<p> This declares a text block <b>codesnippet</b> that is piped through a
-processor <b>syntaxHighlight</b>. A processor is a callable that takes a
-string, performs some transformation on it, and returns a string. When the
-block is evaluated (i.e. called), the block output is passed through the
-interpreter before being substituted into the page. An arbitrary number of
-processors can be chained together: </p>
+Using processors is similar to using pipes in Unix shells. Any callable that
+takes a string and returns a string can be used as a processor. Processors can
+be chained together:
 
 <!--(block|cubescript|htmlSyntax)-->
 <!--(_block codesnippet|trimWhitespace|syntaxHighlight)-->
@@ -43,57 +37,23 @@ processors can be chained together: </p>
 @_!codesnippet!@
 <!--(end)-->
 
-<p> Block output is passed through the processors from left to right. In this
-case, <b>trimWhitespace</b> would be run first, then <b>syntaxHighlight</b>.
+In this case, __trimWhitespace__ would be run first, then __syntaxHighlight__.
 The processor declarations are just expressions evaluated in the namespace of
-the block declaration. Processors are passed in to a template just like any
-other namespace item. A more complete example might look like this:</b>
+the block declaration. Processors should be passed in to a template namespace
+for use.
+
+
+Anonymous Blocks
+================
+
+There is one further refinement to the block syntax. In the examples above,
+naming the block is redundant - it is created, and then immediately substituted
+into the template. Anonymous blocks remove this redundancy. An anonymous block
+is immediately inserted into he template at its place of definition. The
+following template is equivalent to the last definition above:
 
 <!--(block|cubescript|htmlSyntax)-->
-<!--(_block codesnippet|trimWhitespace|syntaxHighlight(style="mystyle"))-->
-    for i in range(10):
-        print i
-<!--(_end)-->
-@_!codesnippet!@
-<!--(end)-->
-
-<p> With accompanying code: </p>
-
-<!--(block | cubescript | pySyntax)-->
-class SyntaxHighlight:
-    def __init__(self, style):
-        self.style = style
-
-    def __call__(self, str):
-        ... some code ...
-        return str
-
-def trimWhitespace(str):
-    ... some code ...
-    return str
-        
-temp = cubictemp.Template(  
-    template,
-    trimWhitespace=trimWhitespace,
-    syntaxHighlight=SyntaxHighlight
-)
-print temp
-<!--(end)-->
-
-
-
-<h1> Anonymous Blocks </h1>
-
-<p> There's one last piece of syntax sugar to make working with processors
-easier. The scenario where a block with processors is declared, and then
-immediately substituted into the page is a common one. Anonymous processors
-remove the redundancy involved in this process, by allowing you to declare and
-call a block in the same step. The following snippet is functionally equivalent
-to the template in the example above, except that it doesn't make an entry into
-the namespace:</p>
-
-<!--(block|cubescript|htmlSyntax)-->
-<!--(_block|trimWhitespace|syntaxHighlight(style="mystyle"))-->
+<!--(_block|trimWhitespace|syntaxHighlight)-->
     for i in range(10):
         print i
 <!--(_end)-->

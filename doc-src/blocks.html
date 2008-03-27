@@ -1,14 +1,14 @@
 
-Defining blocks
-===============
+Named blocks
+=============
 
-<p> Cubictemp allows you to define named blocks - chunks of text that are
-defined in the template body, and can be referenced by name. </p>
+Cubictemp blocks are chunks of text that are defined in the template body, and
+can be referenced in various ways.  The simplest block variety is the _named
+block_:
 
 <!--(block|cubescript|htmlSyntax)-->
 <!--(_block bar)-->
-    The time has come the @_!foo!@ said
-    To speak of many things...
+    The time has come the walrus said
 <!--(_end)-->
 one
 @_!bar!@
@@ -17,130 +17,64 @@ two
 three
 <!--(end)-->
 
-<p> The template definition above declares a named block called "bar", and then
-substitutes it into the page - you may think of it as similar to declaring and
-then calling a Python function. Using the following piece of code:</p>
+Output:
 
-<!--(block|pySyntax)-->
-print cubictemp.File(template, foo="walrus")
-<!--(end)-->
-
-<p>the template above will output:</p>
-
-<pre>
-    one
-    The time has come the walrus said
-    To speak of many things...
-    two
-    The time has come the walrus said
-    To speak of many things...
-    three
+<pre class="output">
+one
+    The time has come the walrus said...
+two
+    The time has come the walrus said...
+three
 </pre>
 
-<p> Notice that the contents of the named block are not inserted into the
-output due to the <i>definition</i> of the named block, but rather due to its
-occurence in the following substitution tag. Blocks can be nested to arbitrary
-depths. Block namespaces and scopes work similarly to Python namespaces and
-scopes. Consider the following template:</p>
+Like a function, named blocks only produce output when they are referenced. The
+block definition itself does not appear in the template output.
+
+Named blocks are callable objects that accept an over-riding namespace
+argument:
 
 <!--(block|cubescript|htmlSyntax)-->
 <!--(_block bar)-->
-    <!--(_block bar)-->
-    one
-    <!--(_end)-->
-    @_!bar!@
-    two
-<!--(_end)-->
-@_!bar!@
-<!--(_block bar)-->
-    three
-<!--(_end)-->
-@_!bar!@
-<!--(end)-->
-
-<p> When evaluated, this will print: </p>
-
-
-
-<pre>
-    one
-    two
-    three
-</pre>
-
-
-<p> Named blocks, like <b>Template</b> and <b>File</b> objects, have the
-"_cubictemp_unescaped" attribute defined by default. This means that they will
-go unescaped when inserted using the standard 
-
-<!--(block|cubescript)-->
-<code class="template">@_!...!@</code> 
-<!--(end)-->
-
-escaped subsitution syntax. This arrangement makes sense when you consider that
-the raw content of named blocks will almost never originate from an untrusted
-source, and that blocks very commonly intentionally contain HTML. </p>
-
-
-<h1> Calling blocks </h1>
-
-<p> During the discussion templates, we noted
-that a Template object can be rendered by calling it like a function. The user
-can also pass a set of keyword arguments to this call, which over-rides the
-namespace provided at the instantiation of the object. The same is true for
-named blocks - you can call a block, and provide namespace arguments
-on-the-fly. Consider the following template:</p>
-
-<!--(block|cubescript|htmlSyntax)-->
-<!--(_block bar)-->
-    The time has come the @_!foo!@ said
-    To speak of many things...
+    The time has come the @_!foo!@ said...
 <!--(_end)-->
 @_!bar(foo="walrus")!@
 
 @_!bar(foo="carpenter")!@
 <!--(end)-->
 
-<p> Regardless of the arguments supplied during instantiation of the Template
-object, the template above will produce the following output: </p>
+Output:
 
-<pre>
-The time has come the walrus said
-To speak of many things...
+<pre class="output">
+    The time has come the walrus said
 
-The time has come the carpenter said
-To speak of many things...
+    The time has come the carpenter said
 </pre>
 
+Blocks can be nested to arbitrary depths. Block namespaces and scopes work
+similarly to Python namespaces and scopes.
 
-<h1> Playing nice with your designers: closed and open tags</h1>
-
-<p> Before we go on to discuss the use and properties of the different block
-types, lets take a moment to have another look at the block syntax. </p>
-
-
-<!--(block|cubescript|htmlSyntax)-->
-<!--(_block foo)-->
-    @_!bar!@
-<!--(_end)-->
+Named blocks have the <b>_cubictemp_unescaped</b> attribute defined by default,
+so they will go unescaped when inserted using the standard 
+<!--(block|cubescript)-->
+<code class="template">@_!...!@</code> 
 <!--(end)-->
+escaped subsitution syntax.
 
 
-<p> Notice that the start and end directives of the block are crafted to look
-like HTML comments.  This means that when you view your unrendered template in
-a browser, these directives are invisible, but their contents are viewable.
-This is handy in some circumstances, but it might not always be what we want.
-In fact, Cubictemp block directives have two different "flavours". The
-<b>closed</b> tag flavour, shown above, allows us to specify directives that
-are full HTML comments. The <b>open</b> tag flavour allows us to write blocks
-that are HTML comments in their entirety:</p>
+Playing nice with your designers: closed and open tags
+======================================================
+
+There is a minor variation on the block defintion syntax to help preserve
+document structure during template design. Since the start and end directives
+of Cubictemp blocks look like HTML comments, they are not visible when the
+document is viewed as HTML. It is often convenient to be able to also comment
+everything inside the block. This is accomplished using the __open__ tag
+variation:
 
 <!--(block|cubescript|htmlSyntax)-->
 <!--(_block foo)
-    @_!bar!@
+    The time has come the walrus said...
 (_end)-->
 <!--(end)-->
 
-<p> There is no functional difference between the two flavours. The two
-flavours simply allow us to craft templates that can easily be viewed in a
-web-browser, without being rendered first.</p>
+<p> There is no functional difference between the two flavours.</p>
