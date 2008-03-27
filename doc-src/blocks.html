@@ -58,13 +58,43 @@ so they will go unescaped when inserted using the standard
 <!--(block|cubescript)-->
 <code class="template">@_!...!@</code> 
 <!--(end)-->
-escaped subsitution syntax.
+escaped substitution syntax.
+
+
+
+<h1> Repeat Blocks </h1>
+
+<p>Cubictemp provides a repeat construct to allow traversal of iterables:</p>
+
+<!--(block|cubescript|htmlSyntax)-->
+<!--(_for foo in bar)-->
+    @_!foo!@
+<!--(_end)-->
+<!--(end)-->
+
+Like a Python __for__ loop, the template above loops through all elements of
+"bar", setting the value of "foo" to each element in turn. As in simple
+substitutions, any valid expression can be used as the sequence definition:
+
+<!--(block|cubescript|htmlSyntax)-->
+<!--(_for foo in range(3))-->
+    Counting: @_!foo!@
+<!--(_end)-->
+<!--(end)-->
+
+Output:
+
+<pre class="output">
+Counting: 0
+Counting: 1
+Counting: 2
+</pre>
 
 
 Playing nice with your designers: closed and open tags
 ======================================================
 
-There is a minor variation on the block defintion syntax to help preserve
+There is a minor variation on the block definition syntax to help preserve
 document structure during template design. Since the start and end directives
 of Cubictemp blocks look like HTML comments, they are not visible when the
 document is viewed as HTML. It is often convenient to be able to also comment
@@ -78,3 +108,4 @@ variation:
 <!--(end)-->
 
 <p> There is no functional difference between the two flavours.</p>
+
