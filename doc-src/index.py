@@ -11,6 +11,7 @@ ns.foot = "Copyright Nullcube 2008"
 ns.head = readFrom("_header.html")
 ns.sidebar = countershape.widgets.SiblingPageIndex('/index.html', exclude=['countershape'])
 this.layout = countershape.layout.TwoPane("yui-t2", "doc3")
+this.titlePrefix = "Cubictemp Manual - "
 
 ns.ctgrok = countershape.grok.grok("../cubictemp.py")
 
