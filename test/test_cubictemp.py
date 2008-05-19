@@ -205,7 +205,7 @@ class uTemplate(libpry.AutoTree):
 
     def test_call(self):
         s = cubictemp.Template(self.s)(tag="voing")
-        assert "voing" in s
+        assert "voing" in str(s)
 
     def test_unbalanced(self):
         s = """
@@ -234,7 +234,7 @@ class uTemplate(libpry.AutoTree):
             @!foo!@
         """
         t = cubictemp.Template(s, strip=string.strip)
-        assert "::one::" in t(dummyproc=dummyproc)
+        assert "::one::" in str(t(dummyproc=dummyproc))
 
     def test_inlineproc(self):
         s = """
@@ -243,7 +243,7 @@ class uTemplate(libpry.AutoTree):
             <!--(end)-->
         """
         t = cubictemp.Template(s, strip=string.strip)
-        assert "::one::" in t(dummyproc=dummyproc)
+        assert "::one::" in str(t(dummyproc=dummyproc))
 
     def test_namespace_err(self):
         s = """
@@ -253,7 +253,7 @@ class uTemplate(libpry.AutoTree):
             <!--(end)-->
         """
         t = cubictemp.Template(s)
-        libpry.raises("not defined", t)
+        libpry.raises("not defined", str, t)
 
     def test_namespace_follow(self):
         s = """
@@ -308,7 +308,7 @@ class uTemplate(libpry.AutoTree):
             <!--(end)-->
         """
         t = cubictemp.Template(s, strip=string.strip)
-        assert t(dummyproc=dummyproc).strip() == "::one::"
+        assert str(t(dummyproc=dummyproc)).strip() == "::one::"
 
     def test_block_following_whitespace(self):
         s = """
@@ -320,7 +320,7 @@ class uTemplate(libpry.AutoTree):
             test
         """
         t = cubictemp.Template(s, strip=string.strip)
-        assert "\n\n" in t(dummyproc=dummyproc)
+        assert "\n\n" in str(t(dummyproc=dummyproc))
 
     def test_processorchain(self):
         s = """
@@ -329,7 +329,7 @@ class uTemplate(libpry.AutoTree):
             <!--(end)-->
         """
         t = cubictemp.Template(s, strip=string.strip, dummyproc2=dummyproc2)
-        assert t(dummyproc=dummyproc).strip() == "**::one::**"
+        assert str(t(dummyproc=dummyproc)).strip() == "**::one::**"
 
     def test_lines(self):
         s = """
@@ -339,7 +339,7 @@ class uTemplate(libpry.AutoTree):
         """
         t = cubictemp.Template(s)
         s = t()
-        assert ":<!" in s
+        assert ":<!" in str(s)
 
 
 tests = [

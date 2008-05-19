@@ -18,7 +18,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-import cgi, re, itertools
+import cgi, re, itertools, copy
 
 class TemplateError(Exception):
     """
@@ -245,18 +245,19 @@ class Template:
         """
             Evaluate the template in the namespace provided at instantiation.
         """
-        return self()
+        return self.block(**self.nsDict)
 
     def __call__(self, **override):
         """
             :override A set of key/value pairs.
 
-            Evaluate the template, over-riding the instantiation namespace with
-            the specified key/value pairs. Returns a string.
+            Returns a copy of this template, with the over-riding namespace
+            incorporated.
         """
-        ns = self.nsDict.copy()
-        ns.update(override)
-        return self.block(**ns)
+        c = copy.copy(self)
+        c.nsDict = self.nsDict.copy()
+        c.nsDict.update(**override)
+        return c
 
 
 class File(Template):
