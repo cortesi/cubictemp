@@ -94,15 +94,15 @@ class u_Expression(libpry.AutoTree):
     def setUp(self):
         self.s = cubictemp.Template("text")
 
-    def test_call(self):
+    def test_render(self):
         e = cubictemp._Expression("foo", "@", 0, self.s, {})
-        assert e(foo="bar") == "bar"
+        assert e.render(foo="bar") == "bar"
 
     def test_block(self):
         e = cubictemp._Expression("foo", "@", 0, self.s, {})
         t = cubictemp._Block(None, 0, self.s, {})
         t.append(cubictemp._Text("bar"))
-        assert e(foo=t) == "bar"
+        assert e.render(foo=t) == "bar"
 
     def test_syntaxerr(self):
         libpry.raises(
@@ -116,7 +116,7 @@ class u_Expression(libpry.AutoTree):
         e = cubictemp._Expression("foo", "@", 0, self.s, {})
         libpry.raises(
             "NameError",
-            e,
+            e.render,
         )
 
     def test_escaping(self):
@@ -124,7 +124,7 @@ class u_Expression(libpry.AutoTree):
             "foo", "@",
             0, "foo", {}
         )
-        f = e(foo="<>")
+        f = e.render(foo="<>")
         assert "&lt;" in f
         assert not "<" in f
         assert not ">" in f
@@ -136,37 +136,37 @@ class u_Expression(libpry.AutoTree):
                 return "<>"
         t = T()
         e = cubictemp._Expression("foo", "@", 0, "foo", {})
-        f = e(foo=t)
+        f = e.render(foo=t)
         assert "<" in f
         assert ">" in f
 
 
 class uText(libpry.AutoTree):
-    def test_call(self):
+    def test_render(self):
         t = cubictemp._Text("foo")
-        assert t() == "foo"
+        assert t.render() == "foo"
         
 
 class uBlock(libpry.AutoTree):
     def setUp(self):
         self.s = cubictemp.Template("text")
 
-    def test_call(self):
+    def test_render(self):
         t = cubictemp._Block(None, 0, self.s, {})
         t.append(cubictemp._Text("bar"))
-        assert t() == "bar"
+        assert t.render() == "bar"
 
     def test_processor(self):
         t = cubictemp._Block("dummyproc", 0, self.s, {})
         t.append(cubictemp._Text("foo"))
-        assert t(dummyproc=dummyproc) == "::foo::"
+        assert t.render(dummyproc=dummyproc) == "::foo::"
 
 
 class uIterable(libpry.AutoTree):
     def test_call(self):
         t = cubictemp._Iterable("foo", "bar", 0, "foo", {})
         t.append(cubictemp._Expression("bar", "@", 0, "foo", {}))
-        assert t(foo=[1, 2, 3]) == "123"
+        assert t.render(foo=[1, 2, 3]) == "123"
 
 
 class uTemplate(libpry.AutoTree):
@@ -248,12 +248,20 @@ class uTemplate(libpry.AutoTree):
     def test_namespace_err(self):
         s = """
             @!one!@
-            <!--(block one)-->
-                one
-            <!--(end)-->
         """
         t = cubictemp.Template(s)
         libpry.raises("not defined", str, t)
+
+    def test_namespace_simplenest(self):
+        s = """
+            <!--(block one)--> 
+                @!two!@
+                @!three!@
+            <!--(end)-->
+            @!one(three="bar")!@
+        """
+        t = cubictemp.Template(s)
+        assert "foo" in str(t(two="foo"))
 
     def test_namespace_follow(self):
         s = """

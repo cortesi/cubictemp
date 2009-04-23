@@ -37,7 +37,7 @@ class uTemplate(TemplateTester):
             print "-------"
             print mout
             print "-------"
-            self.fail("Actual output does not match expected output")
+            raise AssertionError("Actual output does not match expected output")
 
     def test_if(self):
         self._runTemp("if")
@@ -103,8 +103,8 @@ class uQuoting(TemplateTester):
     def _runTemp(self, filename, nsDict={}):
         filename = os.path.join(self.PREFIX, filename)
         output = TemplateTester._runTemp(self, filename, nsDict)
-        if (output.find("<") >= 0): self.fail()
-        if (output.find(">") >= 0): self.fail()
+        if (output.find("<") >= 0): raise AssertionError()
+        if (output.find(">") >= 0): raise AssertionError()
         
     def test_commonuse(self):
         class Dummy:
@@ -123,8 +123,8 @@ class uNonQuoting(TemplateTester):
     def _runTemp(self, filename, nsDict):
         filename = os.path.join(self.PREFIX, filename)
         output = TemplateTester._runTemp(self, filename, nsDict)
-        if (output.find("<") < 0): self.fail()
-        if (output.find(">") < 0): self.fail()
+        if (output.find("<") < 0): raise AssertionError()
+        if (output.find(">") < 0): raise AssertionError()
         
     def test_commonuse(self):
         class Dummy:

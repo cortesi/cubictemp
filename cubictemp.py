@@ -101,7 +101,7 @@ class _Text:
     def __init__(self, txt):
         self.txt = txt
 
-    def __call__(self, **ns):
+    def render(self, **ns):
         return self.txt
 
 
@@ -128,11 +128,11 @@ class _Expression(_Eval):
         self.ns = ns
         self._ecache = self._compile(expr, pos, tmpl)
 
-    def __call__(self, **ns):
+    def render(self, **ns):
         ns.update(self.ns)
         ret = self._eval(self._ecache, ns)
         if isinstance(ret, _Block):
-            ret = ret(**ns)
+            ret = ret.render(**ns)
         if self.flavor == "@":
             if not getattr(ret, "_cubictemp_unescaped", 0):
                 return escape(str(ret))
@@ -148,14 +148,28 @@ class _Block(list, _Eval):
                 "_cubictemp_processor | " + processor, pos, tmpl
             )
 
-    def __call__(self, **ns):
-        r = "".join([i(**ns) for i in self])
+    def render(self, **ns):
+        n = ns.copy()
+        n.update(self.ns)
+        r = "".join([i.render(**n) for i in self])
         if self.processor:
-            ns["_cubictemp_processor"] = _Processor()
-            proc = self._eval(self._ecache, ns)
+            n["_cubictemp_processor"] = _Processor()
+            proc = self._eval(self._ecache, n)
             return proc(r)
         else:
             return r
+
+    def __call__(self, **override):
+        """
+            :override A set of key/value pairs.
+
+            Returns a copy of this block, with the over-riding namespace
+            incorporated.
+        """
+        c = copy.copy(self)
+        c.ns = self.ns.copy()
+        c.ns.update(**override)
+        return c
 
 
 class _Iterable(list, _Eval):
@@ -165,7 +179,7 @@ class _Iterable(list, _Eval):
         self.ns = ns
         self._ecache = self._compile(iterable, pos, tmpl)
 
-    def __call__(self, **ns):
+    def render(self, **ns):
         loopIter = self._eval(self._ecache, ns)
         try:
             loopIter = iter(loopIter)
@@ -175,7 +189,7 @@ class _Iterable(list, _Eval):
         s = []
         for i in loopIter:
             ns[self.varname] = i
-            s.append("".join([i(**ns) for i in self]))
+            s.append("".join([i.render(**ns) for i in self]))
         return "".join(s)
 
 
@@ -245,7 +259,7 @@ class Template:
         """
             Evaluate the template in the namespace provided at instantiation.
         """
-        return self.block(**self.nsDict)
+        return self.block.render(**self.nsDict)
 
     def __call__(self, **override):
         """
