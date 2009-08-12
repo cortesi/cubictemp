@@ -18,7 +18,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 #
-import cgi, re, itertools, copy
+import cgi, re, itertools, copy, os.path
 
 class TemplateError(Exception):
     """
@@ -287,3 +287,29 @@ class File(Template):
         self.name = filename
         data = open(filename).read()
         Template.__init__(self, data, **nsDict)
+
+
+class FileWatcher:
+    def __init__(self, filename, **nsDict):
+        """
+            :filename Full Path to file containing template body.
+            :nsDict Instantiation namespace dictionary.
+        """
+        self.name = filename
+        self.initDict = nsDict
+        self._reload()
+
+    def _reload(self):
+        self.last = os.path.getmtime(self.name)
+        data = open(self.name).read()
+        self.template = Template(data, **self.initDict)
+
+    def __call__(self, *args, **kwargs):
+        if os.path.getmtime(self.name) != self.last:
+            self._reload()
+        return self.template(*args, **kwargs)
+
+    def __str__(self):
+        if os.path.getmtime(self.name) != self.last:
+            self._reload()
+        return self.template.__str__()

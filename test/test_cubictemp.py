@@ -1,4 +1,4 @@
-import string
+import string, os, os.path, time
 import libpry
 import cubictemp
 
@@ -350,6 +350,25 @@ class uTemplate(libpry.AutoTree):
         assert ":<!" in str(s)
 
 
+class uFileWatcher(libpry.AutoTree):
+    def test_update(self):
+        d = self.tmpdir()
+        p = os.path.join(d, "test")
+
+        f = open(p, "w")
+        f.write("foo")
+        f.close()
+        w = cubictemp.FileWatcher(p)
+        assert str(w) == "foo"
+        assert str(w()) == "foo"
+        time.sleep(1)
+        f = open(p, "w")
+        f.write("bar")
+        f.close()
+        assert str(w) == "bar"
+        assert str(w()) == "bar"
+
+
 tests = [
     u_Processor(),
     uTemplateError(),
@@ -358,4 +377,5 @@ tests = [
     uBlock(),
     uIterable(),
     uTemplate(),
+    uFileWatcher(),
 ]
