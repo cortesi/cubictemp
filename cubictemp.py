@@ -63,7 +63,7 @@ class TemplateError(Exception):
 
     def __str__(self):
         ret = [
-            "%s"%self.message,
+            "%s"%self.args[0],
             "\tContext: line %s in %s:"%(self.lineNo, self.template.name),
         ]
         ret.append(self._contextStr)
