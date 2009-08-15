@@ -135,8 +135,8 @@ class _Expression(_Eval):
             ret = ret.render(**ns)
         if self.flavor == "@":
             if not getattr(ret, "_cubictemp_unescaped", 0):
-                return escape(str(ret))
-        return str(ret)
+                return escape(unicode(ret))
+        return unicode(ret)
 
 
 class _Block(list, _Eval):
