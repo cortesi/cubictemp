@@ -87,7 +87,7 @@ class uTemplateError(libpry.AutoTree):
             <!--(end)-->
             @!foo!@
         """
-        libpry.raises("line 3", str, cubictemp.Template(s))
+        libpry.raises("line 3", unicode, cubictemp.Template(s))
 
 
 class u_Expression(libpry.AutoTree):
@@ -199,13 +199,13 @@ class uTemplate(libpry.AutoTree):
         assert nest[0].iterable == "[1, 2, 3]"
         assert nest[0][1].expr == "tag"
 
-    def test_str(self):
-        s = str(cubictemp.Template("foo"))
+    def test_unicode(self):
+        s = unicode(cubictemp.Template("foo"))
         assert s == "foo"
 
     def test_call(self):
         s = cubictemp.Template(self.s)(tag="voing")
-        assert "voing" in str(s)
+        assert "voing" in unicode(s)
 
     def test_unbalanced(self):
         s = """
@@ -223,7 +223,7 @@ class uTemplate(libpry.AutoTree):
                 @!i!@
             <!--(end)-->
         """
-        s = str(cubictemp.Template(s))
+        s = unicode(cubictemp.Template(s))
         assert "[0, 1, 2, 3, 4" in s
 
     def test_simpleproc(self):
@@ -234,7 +234,7 @@ class uTemplate(libpry.AutoTree):
             @!foo!@
         """
         t = cubictemp.Template(s, strip=string.strip)
-        assert "::one::" in str(t(dummyproc=dummyproc))
+        assert "::one::" in unicode(t(dummyproc=dummyproc))
 
     def test_inlineproc(self):
         s = """
@@ -243,14 +243,14 @@ class uTemplate(libpry.AutoTree):
             <!--(end)-->
         """
         t = cubictemp.Template(s, strip=string.strip)
-        assert "::one::" in str(t(dummyproc=dummyproc))
+        assert "::one::" in unicode(t(dummyproc=dummyproc))
 
     def test_namespace_err(self):
         s = """
             @!one!@
         """
         t = cubictemp.Template(s)
-        libpry.raises("not defined", str, t)
+        libpry.raises("not defined", unicode, t)
 
     def test_namespace_simplenest(self):
         s = """
@@ -261,7 +261,7 @@ class uTemplate(libpry.AutoTree):
             @!one(three="bar")!@
         """
         t = cubictemp.Template(s)
-        assert "foo" in str(t(two="foo"))
+        assert "foo" in unicode(t(two="foo"))
 
     def test_namespace_follow(self):
         s = """
@@ -284,7 +284,7 @@ class uTemplate(libpry.AutoTree):
             <!--(end)-->
             @!one!@
         """
-        t = str(cubictemp.Template(s))
+        t = unicode(cubictemp.Template(s))
         assert "one" in t
         assert "two" in t
 
@@ -305,7 +305,7 @@ class uTemplate(libpry.AutoTree):
             <!--(end)-->
             @!one!@
         """
-        t = str(cubictemp.Template(s))
+        t = unicode(cubictemp.Template(s))
         assert "foo" in t
         assert "bar" in t
 
@@ -316,7 +316,7 @@ class uTemplate(libpry.AutoTree):
             <!--(end)-->
         """
         t = cubictemp.Template(s, strip=string.strip)
-        assert str(t(dummyproc=dummyproc)).strip() == "::one::"
+        assert unicode(t(dummyproc=dummyproc)).strip() == "::one::"
 
     def test_block_following_whitespace(self):
         s = """
@@ -328,7 +328,7 @@ class uTemplate(libpry.AutoTree):
             test
         """
         t = cubictemp.Template(s, strip=string.strip)
-        assert "\n\n" in str(t(dummyproc=dummyproc))
+        assert "\n\n" in unicode(t(dummyproc=dummyproc))
 
     def test_processorchain(self):
         s = """
@@ -337,7 +337,7 @@ class uTemplate(libpry.AutoTree):
             <!--(end)-->
         """
         t = cubictemp.Template(s, strip=string.strip, dummyproc2=dummyproc2)
-        assert str(t(dummyproc=dummyproc)).strip() == "**::one::**"
+        assert unicode(t(dummyproc=dummyproc)).strip() == "**::one::**"
 
     def test_lines(self):
         s = """
@@ -347,7 +347,7 @@ class uTemplate(libpry.AutoTree):
         """
         t = cubictemp.Template(s)
         s = t()
-        assert ":<!" in str(s)
+        assert ":<!" in unicode(s)
 
 
 class uFileWatcher(libpry.AutoTree):
@@ -359,14 +359,14 @@ class uFileWatcher(libpry.AutoTree):
         f.write("foo")
         f.close()
         w = cubictemp.FileWatcher(p)
-        assert str(w) == "foo"
-        assert str(w()) == "foo"
+        assert unicode(w) == "foo"
+        assert unicode(w()) == "foo"
         time.sleep(1)
         f = open(p, "w")
         f.write("bar")
         f.close()
-        assert str(w) == "bar"
-        assert str(w()) == "bar"
+        assert unicode(w) == "bar"
+        assert unicode(w()) == "bar"
 
 
 tests = [

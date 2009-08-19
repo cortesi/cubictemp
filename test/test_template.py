@@ -7,18 +7,18 @@ class uBasic(libpry.AutoTree):
     def test_simple(self):
         test = "@!1!@"
         ct = cubictemp.Template(test)
-        assert str(ct) == "1"
+        assert unicode(ct) == "1"
 
     def test_simple2(self):
         test = "@!a!@"
         ns = {"a": 1}
         ct = cubictemp.Template(test, **ns)
-        assert str(ct) == "1"
+        assert unicode(ct) == "1"
 
 
 class TemplateTester(libpry.AutoTree):
     def _runTemp(self, filename, nsDict):
-        return str(cubictemp.File(filename + ".test", **nsDict))
+        return unicode(cubictemp.File(filename + ".test", **nsDict))
 
 
 class uTemplate(TemplateTester):

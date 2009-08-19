@@ -255,7 +255,7 @@ class Template:
         if pos < len(txt):
             stack[-1].append(_Text(txt[pos:]))
 
-    def __str__(self):
+    def __unicode__(self):
         """
             Evaluate the template in the namespace provided at instantiation.
         """
@@ -309,7 +309,7 @@ class FileWatcher:
             self._reload()
         return self.template(*args, **kwargs)
 
-    def __str__(self):
+    def __unicode__(self):
         if os.path.getmtime(self.name) != self.last:
             self._reload()
-        return self.template.__str__()
+        return unicode(self.template)
