@@ -174,7 +174,7 @@ class _Block(list, _Eval):
 
 class _Iterable(list, _Eval):
     def __init__(self, iterable, varname, pos, tmpl, ns):
-        self.iterable, self.varname = iterable, varname
+        self.iterable, self.varname = iterable, str(varname)
         self.pos, self.tmpl = pos, tmpl
         self.ns = ns
         self._ecache = self._compile(iterable, pos, tmpl)
@@ -261,6 +261,12 @@ class Template:
         """
         return self.block.render(**self.nsDict)
 
+    def __str__(self):
+        """
+            Evaluate the template in the namespace provided at instantiation.
+        """
+        return unicode(self).encode("ascii")
+
     def __call__(self, **override):
         """
             :override A set of key/value pairs.
@@ -313,3 +319,10 @@ class FileWatcher:
         if os.path.getmtime(self.name) != self.last:
             self._reload()
         return unicode(self.template)
+
+    def __str__(self):
+        """
+            Evaluate the template in the namespace provided at instantiation.
+        """
+        return unicode(self).encode("ascii")
+

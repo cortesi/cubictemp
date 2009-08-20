@@ -200,8 +200,18 @@ class uTemplate(libpry.AutoTree):
         assert nest[0][1].expr == "tag"
 
     def test_unicode(self):
-        s = unicode(cubictemp.Template("foo"))
-        assert s == "foo"
+        s = unicode(cubictemp.Template(u"\ue2e2foo"))
+        assert s == u"\ue2e2foo"
+
+        s = cubictemp.Template("@!foo!@")
+        assert unicode(s(foo=u"\ue2e2"))
+
+        s = cubictemp.Template(u"""
+                <!--(for i in uc)-->
+                    @!i!@
+                <!--(end)-->
+            """)
+        assert unicode(s(uc=[u"\ue2e2"]))
 
     def test_call(self):
         s = cubictemp.Template(self.s)(tag="voing")
