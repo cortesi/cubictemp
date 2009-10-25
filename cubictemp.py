@@ -229,7 +229,7 @@ class Template:
             g = m.groupdict()
             if g["blockName"]:
                 b = _Block(g["processor"], pos, self, parent.ns.copy())
-                parent.ns[g["blockName"]] = b
+                parent.ns[str(g["blockName"])] = b
                 stack.append(b)
             if g["processor"]:
                 b = _Block(g["processor"], pos, self, parent.ns.copy())
