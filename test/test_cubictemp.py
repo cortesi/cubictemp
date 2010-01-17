@@ -377,6 +377,7 @@ class uFileWatcher(libpry.AutoTree):
         f.close()
         assert unicode(w) == "bar"
         assert unicode(w()) == "bar"
+        assert w.raw() == "bar"
 
 
 tests = [

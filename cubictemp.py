@@ -267,6 +267,12 @@ class Template:
         """
         return unicode(self).encode("ascii")
 
+    def raw(self):
+        """
+            Return an unencoded representation.
+        """
+        return self.block.render(**self.nsDict)
+
     def __call__(self, **override):
         """
             :override A set of key/value pairs.
@@ -314,6 +320,11 @@ class FileWatcher:
         if os.path.getmtime(self.name) != self.last:
             self._reload()
         return self.template(*args, **kwargs)
+
+    def raw(self):
+        if os.path.getmtime(self.name) != self.last:
+            self._reload()
+        return self.template.raw()
 
     def __unicode__(self):
         if os.path.getmtime(self.name) != self.last:
