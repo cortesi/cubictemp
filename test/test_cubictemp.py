@@ -145,7 +145,7 @@ class uText(libpry.AutoTree):
     def test_render(self):
         t = cubictemp._Text("foo")
         assert t.render() == "foo"
-        
+
 
 class uBlock(libpry.AutoTree):
     def setUp(self):
@@ -264,7 +264,7 @@ class uTemplate(libpry.AutoTree):
 
     def test_namespace_simplenest(self):
         s = """
-            <!--(block one)--> 
+            <!--(block one)-->
                 @!two!@
                 @!three!@
             <!--(end)-->
@@ -360,6 +360,18 @@ class uTemplate(libpry.AutoTree):
         assert ":<!" in unicode(s)
 
 
+class uFile(libpry.AutoTree):
+    def test_unicode(self):
+        d = self.tmpdir()
+        p = os.path.join(d, "test")
+        f = open(p, "wb")
+        f.write(u"\u1234@!a!@\u1111".encode("utf8"))
+        f.close()
+        tf = cubictemp.File(p, a="\u1234foo")
+        assert unicode(tf)
+
+
+
 class uFileWatcher(libpry.AutoTree):
     def test_update(self):
         d = self.tmpdir()
@@ -389,4 +401,5 @@ tests = [
     uIterable(),
     uTemplate(),
     uFileWatcher(),
+    uFile()
 ]

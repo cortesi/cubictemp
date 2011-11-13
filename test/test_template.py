@@ -64,7 +64,7 @@ class uTemplate(TemplateTester):
         ns = {
             "foo": "one",
             "bar": "two",
-            "boo": "three",
+            "boo": u"three",
             "mdict": {"entry": "foo"}
         }
         self._runTemp("simple", ns)
@@ -75,7 +75,7 @@ class uErrors(TemplateTester):
     def _runTemp(self, filename, err):
         filename = os.path.join(self.PREFIX, filename)
         libpry.raises(err, TemplateTester._runTemp, self, filename, {})
-        
+
     def test_blockLine(self):
         self._runTemp("blockLine", "'a' is not defined")
 
@@ -105,7 +105,7 @@ class uQuoting(TemplateTester):
         output = TemplateTester._runTemp(self, filename, nsDict)
         if (output.find("<") >= 0): raise AssertionError()
         if (output.find(">") >= 0): raise AssertionError()
-        
+
     def test_commonuse(self):
         class Dummy:
             def __repr__(self):
@@ -125,7 +125,7 @@ class uNonQuoting(TemplateTester):
         output = TemplateTester._runTemp(self, filename, nsDict)
         if (output.find("<") < 0): raise AssertionError()
         if (output.find(">") < 0): raise AssertionError()
-        
+
     def test_commonuse(self):
         class Dummy:
             _cubictemp_unescaped = 1
@@ -142,7 +142,7 @@ class uNonQuoting(TemplateTester):
             "tag":   "<foo>"
         }
         self._runTemp("tag", mdict)
- 
+
 
 tests = [
     uBasic(),
