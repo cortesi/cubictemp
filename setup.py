@@ -39,7 +39,4 @@ setup(
             "Topic :: Software Development :: Libraries",
             "Topic :: Text Processing"
         ],
-        install_requires=[
-            "tinytree"
-        ],
 )
