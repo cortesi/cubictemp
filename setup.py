@@ -25,11 +25,9 @@ setup(
         version="2.0",
         description="A more elegant templating library for a more civilised age",
         long_description=long_description,
-        author="Nullcube Pty Ltd",
-        author_email="aldo@nullcube.com",
+        author="Aldo Cortesi",
+        author_email="aldo@corte.si",
         license="MIT",
-        url="http://dev.nullcube.com",
-        download_url="http://dev.nullcube.com/download/cubictemp-2.0.tar.gz",
         py_modules = ["cubictemp"],
         classifiers = [
             "Intended Audience :: Developers",
@@ -40,5 +38,8 @@ setup(
             "Topic :: Internet :: WWW/HTTP :: Dynamic Content :: CGI Tools/Libraries",
             "Topic :: Software Development :: Libraries",
             "Topic :: Text Processing"
-        ]
+        ],
+        install_requires=[
+            "tinytree"
+        ],
 )
